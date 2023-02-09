@@ -76,7 +76,6 @@ public abstract class RecordsSend<T extends BaseRecords> implements Send {
      * the to maximum bytes we want to write the to `channel`. `previouslyWritten` and `remaining` will be adjusted
      * appropriately for every subsequent invocation. See {@link #writeTo} for example expected usage.
      * @param channel The channel to write to
-     * @param previouslyWritten Bytes written in previous calls to {@link #writeTo(TransferableChannel, long, int)}; 0 if being called for the first time
      * @param remaining Number of bytes remaining to be written
      * @return The number of bytes actually written
      * @throws IOException For any IO errors
