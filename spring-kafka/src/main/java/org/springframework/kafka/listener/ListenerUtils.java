@@ -26,9 +26,6 @@ import org.apache.kafka.clients.consumer.ConsumerRecord;
 import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.header.internals.RecordHeaders;
 
 import org.springframework.core.log.LogAccessor;
 import org.springframework.kafka.support.KafkaUtils;
@@ -100,18 +97,6 @@ public final class ListenerUtils {
 	@Nullable
 	public static DeserializationException getExceptionFromHeader(final ConsumerRecord<?, ?> record,
 			String headerName, LogAccessor logger) {
-
-		Header header = record.headers().lastHeader(headerName);
-		if (header != null) {
-			byte[] value = header.value();
-			DeserializationException exception = byteArrayToDeserializationException(logger, value);
-			if (exception != null) {
-				Headers headers = new RecordHeaders(record.headers().toArray());
-				headers.remove(headerName);
-				exception.setHeaders(headers);
-			}
-			return exception;
-		}
 		return null;
 	}
 

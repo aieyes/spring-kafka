@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.apache.kafka.common.PartitionInfo;
 import org.reactivestreams.Publisher;
 
 import org.springframework.beans.factory.DisposableBean;
-import org.springframework.kafka.support.KafkaHeaders;
 import org.springframework.kafka.support.converter.MessagingMessageConverter;
 import org.springframework.kafka.support.converter.RecordMessageConverter;
 import org.springframework.messaging.Message;
@@ -100,12 +99,6 @@ public class ReactiveKafkaProducerTemplate<K, V> implements AutoCloseable, Dispo
 	public Mono<SenderResult<Void>> send(String topic, Message<?> message) {
 		@SuppressWarnings("unchecked")
 		ProducerRecord<K, V> producerRecord = (ProducerRecord<K, V>) this.messageConverter.fromMessage(message, topic);
-		if (!producerRecord.headers().iterator().hasNext()) { // possibly no Jackson
-			byte[] correlationId = message.getHeaders().get(KafkaHeaders.CORRELATION_ID, byte[].class);
-			if (correlationId != null) {
-				producerRecord.headers().add(KafkaHeaders.CORRELATION_ID, correlationId);
-			}
-		}
 		return send(producerRecord);
 	}
 

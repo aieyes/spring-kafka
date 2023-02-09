@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2020 the original author or authors.
+ * Copyright 2018-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,7 +37,7 @@ import org.springframework.util.Assert;
  * @since 2.1.6
  *
  */
-public class CompositeProducerListener<K, V> implements ProducerListener<K, V> {
+public class CompositeProducerListener<K, V> extends ProducerListenerAdapter<K, V> {
 
 	private final List<ProducerListener<K, V>> delegates = new CopyOnWriteArrayList<>();
 
@@ -76,6 +76,11 @@ public class CompositeProducerListener<K, V> implements ProducerListener<K, V> {
 	@Override
 	public void onError(ProducerRecord<K, V> producerRecord, RecordMetadata recordMetadata, Exception exception) {
 		this.delegates.forEach(d -> d.onError(producerRecord, recordMetadata, exception));
+	}
+
+	@Override
+	public boolean isInterestedInSuccess() {
+		return false;
 	}
 
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2021 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,17 +58,12 @@ public class RoutingKafkaTemplate extends KafkaTemplate<Object, Object> {
 	 * @param factories the factories.
 	 */
 	public RoutingKafkaTemplate(Map<Pattern, ProducerFactory<Object, Object>> factories) {
-		super(new ProducerFactory<Object, Object>() {
-
-			@Override
-			public Producer<Object, Object> createProducer() {
-				throw new UnsupportedOperationException();
-			}
-
+		super(() -> {
+			throw new UnsupportedOperationException();
 		});
 		this.factoryMatchers = new LinkedHashMap<>(factories);
 		Optional<Boolean> transactional = factories.values().stream()
-			.map(fact -> fact.transactionCapable())
+			.map(ProducerFactory::transactionCapable)
 			.findFirst();
 		Assert.isTrue(!transactional.isPresent() || !transactional.get(), "Transactional factories are not supported");
 	}
@@ -78,7 +73,6 @@ public class RoutingKafkaTemplate extends KafkaTemplate<Object, Object> {
 		throw new UnsupportedOperationException(THIS_METHOD_IS_NOT_SUPPORTED);
 	}
 
-	@Override
 	public ProducerFactory<Object, Object> getProducerFactory(String topic) {
 		ProducerFactory<Object, Object> producerFactory = this.factoryMap.computeIfAbsent(topic, key -> {
 			for (Entry<Pattern, ProducerFactory<Object, Object>> entry : this.factoryMatchers.entrySet()) {

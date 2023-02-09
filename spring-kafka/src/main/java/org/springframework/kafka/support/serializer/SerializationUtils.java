@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2022 the original author or authors.
+ * Copyright 2020-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,6 +28,8 @@ import org.apache.kafka.common.header.internals.RecordHeader;
 
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
+
+import javax.annotation.Nullable;
 
 /**
  * Utilities for serialization.
@@ -145,7 +147,7 @@ public final class SerializationUtils {
 	 * @param isForKeyArg true if this is a key deserialization problem, otherwise value.
 	 * @since 2.8
 	 */
-	public static void deserializationException(Headers headers, byte[] data, Exception ex, boolean isForKeyArg) {
+	public static void deserializationException(@Nullable Headers headers, byte[] data, Exception ex, boolean isForKeyArg) {
 		ByteArrayOutputStream stream = new ByteArrayOutputStream();
 		DeserializationException exception =
 				new DeserializationException("failed to deserialize", data, isForKeyArg, ex);
@@ -165,11 +167,12 @@ public final class SerializationUtils {
 				throw new IllegalStateException("Could not serialize a DeserializationException", ex2); // NOSONAR
 			}
 		}
-		headers.add(
-				new RecordHeader(isForKeyArg
-						? KEY_DESERIALIZER_EXCEPTION_HEADER
-						: VALUE_DESERIALIZER_EXCEPTION_HEADER,
-						stream.toByteArray()));
+		if (headers != null) {
+			headers.add(new RecordHeader(isForKeyArg
+					? KEY_DESERIALIZER_EXCEPTION_HEADER
+					: VALUE_DESERIALIZER_EXCEPTION_HEADER,
+					stream.toByteArray()));
+		}
 	}
 
 }

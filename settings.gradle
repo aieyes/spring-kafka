@@ -2,6 +2,14 @@ pluginManagement {
 	repositories {
 		gradlePluginPortal()
 		maven { url 'https://repo.spring.io/plugins-release' }
+		maven {
+			url 'https://nexus.omofresh.com/repository/omofresh/'
+			name 'omofresh'
+			credentials {
+				username "nobody"
+				password "wahaha"
+			}
+		}
 	}
 }
 
@@ -19,5 +27,5 @@ gradleEnterprise {
 rootProject.name = 'spring-kafka-dist'
 
 include 'spring-kafka'
-include 'spring-kafka-test'
-include 'spring-kafka-docs'
+//include 'spring-kafka-test'
+//include 'spring-kafka-docs'

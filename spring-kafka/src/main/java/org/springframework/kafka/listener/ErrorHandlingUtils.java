@@ -133,7 +133,7 @@ public final class ErrorHandlingUtils {
 		try {
 			Boolean retryable = classifier.classify(unwrapIfNeeded(thrownException));
 			while (Boolean.TRUE.equals(retryable) && nextBackOff != BackOffExecution.STOP) {
-				consumer.poll(Duration.ZERO);
+				consumer.poll(Duration.ZERO.toMillis());
 				try {
 					ListenerUtils.stoppableSleep(container, nextBackOff);
 				}
@@ -145,7 +145,7 @@ public final class ErrorHandlingUtils {
 				if (!container.isRunning()) {
 					throw new KafkaException("Container stopped during retries");
 				}
-				consumer.poll(Duration.ZERO);
+				consumer.poll(Duration.ZERO.toMillis());
 				try {
 					invokeListener.run();
 					return;

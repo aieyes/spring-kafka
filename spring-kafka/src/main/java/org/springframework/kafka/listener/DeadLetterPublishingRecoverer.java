@@ -490,9 +490,7 @@ public class DeadLetterPublishingRecoverer extends ExceptionClassifier implement
 				SerializationUtils.VALUE_DESERIALIZER_EXCEPTION_HEADER, this.logger);
 		DeserializationException kDeserEx = ListenerUtils.getExceptionFromHeader(record,
 				SerializationUtils.KEY_DESERIALIZER_EXCEPTION_HEADER, this.logger);
-		Headers headers = new RecordHeaders(record.headers().toArray());
-		addAndEnhanceHeaders(record, exception, vDeserEx, kDeserEx, headers);
-		ProducerRecord<Object, Object> outRecord = createProducerRecord(record, tp, headers,
+		ProducerRecord<Object, Object> outRecord = createProducerRecord(record, tp,
 				kDeserEx == null ? null : kDeserEx.getData(), vDeserEx == null ? null : vDeserEx.getData());
 		KafkaOperations<Object, Object> kafkaTemplate =
 				(KafkaOperations<Object, Object>) this.templateResolver.apply(outRecord);
@@ -568,7 +566,7 @@ public class DeadLetterPublishingRecoverer extends ExceptionClassifier implement
 			return tp;
 		}
 		try {
-			List<PartitionInfo> partitions = consumer.partitionsFor(tp.topic(), this.partitionInfoTimeout);
+			List<PartitionInfo> partitions = consumer.partitionsFor(tp.topic());
 			if (partitions == null) {
 				this.logger.debug(() -> "Could not obtain partition info for " + tp.topic());
 				return tp;
@@ -623,19 +621,17 @@ public class DeadLetterPublishingRecoverer extends ExceptionClassifier implement
 	 * @param record the failed record
 	 * @param topicPartition the {@link TopicPartition} returned by the destination
 	 * resolver.
-	 * @param headers the headers - original record headers plus DLT headers.
 	 * @param key the key to use instead of the consumer record key.
 	 * @param value the value to use instead of the consumer record value.
 	 * @return the producer record to send.
 	 * @see KafkaHeaders
 	 */
 	protected ProducerRecord<Object, Object> createProducerRecord(ConsumerRecord<?, ?> record,
-			TopicPartition topicPartition, Headers headers, @Nullable byte[] key, @Nullable byte[] value) {
-
+			TopicPartition topicPartition, @Nullable byte[] key, @Nullable byte[] value) {
 		return new ProducerRecord<>(topicPartition.topic(),
 				topicPartition.partition() < 0 ? null : topicPartition.partition(),
 				key != null ? key : record.key(),
-				value != null ? value : record.value(), headers);
+				value != null ? value : record.value());
 	}
 
 	/**

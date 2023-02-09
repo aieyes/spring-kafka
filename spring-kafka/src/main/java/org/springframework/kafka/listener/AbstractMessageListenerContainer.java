@@ -480,22 +480,19 @@ public abstract class AbstractMessageListenerContainer<K, V>
 								.toArray(String[]::new);
 					}
 					DescribeTopicsResult result = client.describeTopics(Arrays.asList(topics));
-					missing = result.topicNameValues()
-							.entrySet()
-							.stream()
-							.filter(entry -> {
-								try {
-									entry.getValue().get(this.topicCheckTimeout, TimeUnit.SECONDS);
-									return false;
-								}
-								catch (InterruptedException ex) {
-									Thread.currentThread().interrupt();
-									return true;
-								}
-								catch (@SuppressWarnings("unused") Exception ex) {
-									return true;
-								}
-							})
+					result.values().entrySet().stream().filter(entry -> {
+						try {
+							entry.getValue().get(this.topicCheckTimeout, TimeUnit.SECONDS);
+							return false;
+						}
+						catch (InterruptedException ex) {
+							Thread.currentThread().interrupt();
+							return true;
+						}
+						catch (@SuppressWarnings("unused") Exception ex) {
+							return true;
+						}
+					})
 							.map(Entry::getKey)
 							.collect(Collectors.toList());
 				}
@@ -622,7 +619,6 @@ public abstract class AbstractMessageListenerContainer<K, V>
 						getGroupId() + ": partitions assigned: " + partitions);
 			}
 
-			@Override
 			public void onPartitionsLost(Collection<TopicPartition> partitions) {
 				AbstractMessageListenerContainer.this.logger.info(() ->
 				getGroupId() + ": partitions lost: " + partitions);

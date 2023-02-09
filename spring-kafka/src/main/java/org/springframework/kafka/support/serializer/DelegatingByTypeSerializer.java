@@ -1,5 +1,5 @@
 /*
- * Copyright 2021 the original author or authors.
+ * Copyright 2021-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,11 +35,10 @@ import org.springframework.util.Assert;
  * @since 2.7.9
  *
  */
+@SuppressWarnings({ "unchecked", "rawtypes" })
 public class DelegatingByTypeSerializer implements Serializer<Object> {
 
-	private static final String RAWTYPES = "rawtypes";
 
-	@SuppressWarnings(RAWTYPES)
 	private final Map<Class<?>, Serializer> delegates = new LinkedHashMap<>();
 
 	private final boolean assignable;
@@ -48,7 +47,6 @@ public class DelegatingByTypeSerializer implements Serializer<Object> {
 	 * Construct an instance with the map of delegates; keys matched exactly.
 	 * @param delegates the delegates.
 	 */
-	@SuppressWarnings(RAWTYPES)
 	public DelegatingByTypeSerializer(Map<Class<?>, Serializer> delegates) {
 		this(delegates, false);
 	}
@@ -62,7 +60,6 @@ public class DelegatingByTypeSerializer implements Serializer<Object> {
 	 * @param assignable whether the target is assignable to the key.
 	 * @since 2.8.3
 	 */
-	@SuppressWarnings(RAWTYPES)
 	public DelegatingByTypeSerializer(Map<Class<?>, Serializer> delegates, boolean assignable) {
 		Assert.notNull(delegates, "'delegates' cannot be null");
 		Assert.noNullElements(delegates.values(), "Serializers in delegates map cannot be null");
@@ -86,7 +83,6 @@ public class DelegatingByTypeSerializer implements Serializer<Object> {
 		this.delegates.values().forEach(del -> del.configure(configs, isKey));
 	}
 
-	@SuppressWarnings({ RAWTYPES, "unchecked" })
 	@Override
 	public byte[] serialize(String topic, Object data) {
 		if (data == null) {
@@ -96,14 +92,17 @@ public class DelegatingByTypeSerializer implements Serializer<Object> {
 		return delegate.serialize(topic, data);
 	}
 
-	@SuppressWarnings({ "unchecked", RAWTYPES })
 	@Override
+	public void close() {
+		this.delegates.values().forEach(Serializer::close);
+	}
+
 	public byte[] serialize(String topic, Headers headers, Object data) {
 		if (data == null) {
 			return null;
 		}
 		Serializer delegate = findDelegate(data, this.delegates);
-		return delegate.serialize(topic, headers, data);
+		return delegate.serialize(topic, data);
 	}
 
 	/**
@@ -114,7 +113,6 @@ public class DelegatingByTypeSerializer implements Serializer<Object> {
 	 * @throws SerializationException when there is no match.
 	 * @since 2.8.3
 	 */
-	@SuppressWarnings(RAWTYPES)
 	protected Serializer findDelegate(Object data, Map<Class<?>, Serializer> delegates) {
 		if (!this.assignable) {
 			Serializer delegate = delegates.get(data.getClass());

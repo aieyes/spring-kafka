@@ -62,4 +62,10 @@ public interface ProducerListener<K, V> {
 			Exception exception) {
 	}
 
+	void onSuccess(String var1, Integer var2, K var3, V var4, RecordMetadata var5);
+
+	void onError(String var1, Integer var2, K var3, V var4, Exception var5);
+
+	boolean isInterestedInSuccess();
+
 }

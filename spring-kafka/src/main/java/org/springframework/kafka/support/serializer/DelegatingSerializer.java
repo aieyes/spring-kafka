@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -188,7 +188,6 @@ public class DelegatingSerializer implements Serializer<Object> {
 	}
 
 
-	@Override
 	public byte[] serialize(String topic, Headers headers, Object data) {
 		if (data == null) {
 			return null;
@@ -220,7 +219,7 @@ public class DelegatingSerializer implements Serializer<Object> {
 			throw new IllegalStateException(
 					"No serializer found for '" + selectorKey + "' header with value '" + selector + "'");
 		}
-		return serializer.serialize(topic, headers, data);
+		return serializer.serialize(topic, data);
 	}
 
 	private String selectorKey() {

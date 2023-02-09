@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 the original author or authors.
+ * Copyright 2018-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,29 @@
 
 package org.springframework.kafka.requestreply;
 
+import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.apache.kafka.clients.producer.ProducerRecord;
+import org.apache.kafka.common.TopicPartition;
+import org.springframework.beans.factory.DisposableBean;
+import org.springframework.beans.factory.InitializingBean;
+import org.springframework.context.SmartLifecycle;
+import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.core.log.LogAccessor;
+import org.springframework.kafka.KafkaException;
+import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.core.ProducerFactory;
+import org.springframework.kafka.listener.*;
+import org.springframework.kafka.support.KafkaHeaders;
+import org.springframework.kafka.support.KafkaUtils;
+import org.springframework.kafka.support.TopicPartitionOffset;
+import org.springframework.kafka.support.serializer.DeserializationException;
+import org.springframework.kafka.support.serializer.SerializationUtils;
+import org.springframework.lang.Nullable;
+import org.springframework.messaging.Message;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
+import org.springframework.util.Assert;
+
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.time.Duration;
@@ -28,37 +51,6 @@ import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
-
-import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.Headers;
-import org.apache.kafka.common.header.internals.RecordHeader;
-
-import org.springframework.beans.factory.DisposableBean;
-import org.springframework.beans.factory.InitializingBean;
-import org.springframework.context.SmartLifecycle;
-import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.core.log.LogAccessor;
-import org.springframework.kafka.KafkaException;
-import org.springframework.kafka.core.KafkaTemplate;
-import org.springframework.kafka.core.ProducerFactory;
-import org.springframework.kafka.listener.BatchMessageListener;
-import org.springframework.kafka.listener.ConsumerSeekAware;
-import org.springframework.kafka.listener.ContainerProperties;
-import org.springframework.kafka.listener.GenericMessageListenerContainer;
-import org.springframework.kafka.listener.ListenerUtils;
-import org.springframework.kafka.support.KafkaHeaders;
-import org.springframework.kafka.support.KafkaUtils;
-import org.springframework.kafka.support.TopicPartitionOffset;
-import org.springframework.kafka.support.serializer.DeserializationException;
-import org.springframework.kafka.support.serializer.SerializationUtils;
-import org.springframework.lang.Nullable;
-import org.springframework.messaging.Message;
-import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
-import org.springframework.util.Assert;
 
 /**
  * A KafkaTemplate that implements request/reply semantics.
@@ -150,7 +142,7 @@ public class ReplyingKafkaTemplate<K, V, R> extends KafkaTemplate<K, V> implemen
 		if (tempReplyTopic == null) {
 			this.replyTopic = null;
 			this.replyPartition = null;
-			this.logger.debug(() -> "Could not determine container's reply topic/partition; senders must populate "
+			this.logger.debug("Could not determine container's reply topic/partition; senders must populate "
 					+ "at least the " + KafkaHeaders.REPLY_TOPIC + " header, and optionally the "
 					+ KafkaHeaders.REPLY_PARTITION + " header");
 		}
@@ -377,7 +369,7 @@ public class ReplyingKafkaTemplate<K, V, R> extends KafkaTemplate<K, V> implemen
 						replyFuture.setException(ex);
 					}
 				},
-				ex -> replyFuture.setException(ex));
+				replyFuture::setException);
 		return replyFuture;
 	}
 
@@ -395,16 +387,7 @@ public class ReplyingKafkaTemplate<K, V, R> extends KafkaTemplate<K, V> implemen
 		}
 		CorrelationKey correlationId = this.correlationStrategy.apply(record);
 		Assert.notNull(correlationId, "the created 'correlationId' cannot be null");
-		Headers headers = record.headers();
-		boolean hasReplyTopic = headers.lastHeader(KafkaHeaders.REPLY_TOPIC) != null;
-		if (!hasReplyTopic && this.replyTopic != null) {
-			headers.add(new RecordHeader(this.replyTopicHeaderName, this.replyTopic));
-			if (this.replyPartition != null) {
-				headers.add(new RecordHeader(this.replyPartitionHeaderName, this.replyPartition));
-			}
-		}
-		headers.add(new RecordHeader(this.correlationHeaderName, correlationId.getCorrelationId()));
-		this.logger.debug(() -> "Sending: " + KafkaUtils.format(record) + WITH_CORRELATION_ID + correlationId);
+		this.logger.debug("Sending: " + KafkaUtils.format(record) + WITH_CORRELATION_ID + correlationId);
 		RequestReplyFuture<K, V, R> future = new RequestReplyFuture<>();
 		this.futures.put(correlationId, future);
 		try {
@@ -422,7 +405,7 @@ public class ReplyingKafkaTemplate<K, V, R> extends KafkaTemplate<K, V> implemen
 		this.scheduler.schedule(() -> {
 			RequestReplyFuture<K, V, R> removed = this.futures.remove(correlationId);
 			if (removed != null) {
-				this.logger.warn(() -> "Reply timed out for: " + KafkaUtils.format(record)
+				this.logger.warn("Reply timed out for: " + KafkaUtils.format(record)
 						+ WITH_CORRELATION_ID + correlationId);
 				if (!handleTimeout(correlationId, removed)) {
 					removed.setException(new KafkaReplyTimeoutException("Reply timed out"));
@@ -475,38 +458,6 @@ public class ReplyingKafkaTemplate<K, V, R> extends KafkaTemplate<K, V> implemen
 
 	@Override
 	public void onMessage(List<ConsumerRecord<K, R>> data) {
-		data.forEach(record -> {
-			Header correlationHeader = record.headers().lastHeader(this.correlationHeaderName);
-			CorrelationKey correlationId = null;
-			if (correlationHeader != null) {
-				correlationId = new CorrelationKey(correlationHeader.value());
-			}
-			if (correlationId == null) {
-				this.logger.error(() -> "No correlationId found in reply: " + KafkaUtils.format(record)
-						+ " - to use request/reply semantics, the responding server must return the correlation id "
-						+ " in the '" + this.correlationHeaderName + "' header");
-			}
-			else {
-				RequestReplyFuture<K, V, R> future = this.futures.remove(correlationId);
-				CorrelationKey correlationKey = correlationId;
-				if (future == null) {
-					logLateArrival(record, correlationId);
-				}
-				else {
-					boolean ok = true;
-					Exception exception = checkForErrors(record);
-					if (exception != null) {
-						ok = false;
-						future.setException(exception);
-					}
-					if (ok) {
-						this.logger.debug(() -> "Received: " + KafkaUtils.format(record)
-								+ WITH_CORRELATION_ID + correlationKey);
-						future.set(record);
-					}
-				}
-			}
-		});
 	}
 
 	/**
@@ -519,7 +470,7 @@ public class ReplyingKafkaTemplate<K, V, R> extends KafkaTemplate<K, V> implemen
 	@Nullable
 	protected Exception checkForErrors(ConsumerRecord<K, R> record) {
 		if (record.value() == null || record.key() == null) {
-			DeserializationException de = checkDeserialization(record, this.logger);
+			DeserializationException de = checkDeserialization(record, this.log);
 			if (de != null) {
 				return de;
 			}
@@ -560,10 +511,10 @@ public class ReplyingKafkaTemplate<K, V, R> extends KafkaTemplate<K, V> implemen
 
 	protected void logLateArrival(ConsumerRecord<K, R> record, CorrelationKey correlationId) {
 		if (this.sharedReplyTopic) {
-			this.logger.debug(() -> missingCorrelationLogMessage(record, correlationId));
+			this.logger.debug(missingCorrelationLogMessage(record, correlationId));
 		}
 		else {
-			this.logger.error(() -> missingCorrelationLogMessage(record, correlationId));
+			this.logger.error(missingCorrelationLogMessage(record, correlationId));
 		}
 	}
 

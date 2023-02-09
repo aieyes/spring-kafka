@@ -4,6 +4,14 @@ buildscript {
 		mavenCentral()
 		gradlePluginPortal()
 		maven { url 'https://repo.spring.io/plugins-release' }
+		maven {
+			url 'https://nexus.omofresh.com/repository/omofresh/'
+			name 'omofresh'
+			credentials {
+				username "nobody"
+				password "wahaha"
+			}
+		}
 	}
 	dependencies {
 		classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion"
@@ -17,7 +25,7 @@ plugins {
 	id 'idea'
 	id 'org.sonarqube' version '2.8'
 	id 'org.ajoberstar.grgit' version '4.0.1' apply false
-	id 'io.spring.nohttp' version '0.0.5.RELEASE'
+//	id 'io.spring.nohttp' version '0.0.5.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.10.RELEASE' apply false
 	id 'com.jfrog.artifactory' version '4.18.2' apply false
 	id 'org.asciidoctor.jvm.pdf' version '3.3.2'
@@ -25,7 +33,7 @@ plugins {
 	id 'org.asciidoctor.jvm.convert' version '3.3.2'
 }
 
-apply plugin: 'io.spring.nohttp'
+//apply plugin: 'io.spring.nohttp'
 
 def gitPresent = new File('.git').exists()
 
@@ -59,7 +67,7 @@ ext {
 	jaywayJsonPathVersion = '2.6.0'
 	junit4Version = '4.13.2'
 	junitJupiterVersion = '5.8.2'
-	kafkaVersion = '3.2.3'
+	kafkaVersion = '0.10.2.2'
 	log4jVersion = '2.17.2'
 	micrometerVersion = '1.9.7'
 	mockitoVersion = '4.5.1'
@@ -74,10 +82,10 @@ ext {
 	idPrefix = 'kafka'
 }
 
-nohttp {
-	source.include '**/src/**'
-	source.exclude '**/*.gif', '**/*.ks'
-}
+//nohttp {
+//	source.include '**/src/**'
+//	source.exclude '**/*.gif', '**/*.ks'
+//}
 
 allprojects {
 	group = 'org.springframework.kafka'
@@ -109,6 +117,14 @@ allprojects {
 		if (version.endsWith('SNAPSHOT')) {
 			maven { url 'https://repo.spring.io/snapshot' }
 		}
+		maven {
+			url 'https://nexus.omofresh.com/repository/omofresh/'
+			name 'omofresh'
+			credentials {
+				username "nobody"
+				password "wahaha"
+			}
+		}
 //		maven { url 'https://repository.apache.org/content/groups/staging/' }
 	}
 
@@ -121,12 +137,12 @@ subprojects { subproject ->
 	apply plugin: 'eclipse'
 	apply plugin: 'idea'
 	apply plugin: 'jacoco'
-	apply plugin: 'checkstyle'
+//	apply plugin: 'checkstyle'
 	apply plugin: 'kotlin'
 	apply plugin: 'kotlin-spring'
 
 	java {
-		withJavadocJar()
+//		withJavadocJar()
 		withSourcesJar()
 		registerFeature('optional') {
 			usingSourceSet(sourceSets.main)
@@ -204,10 +220,10 @@ subprojects { subproject ->
 		}
 	}
 
-	checkstyle {
-		configDirectory.set(rootProject.file("src/checkstyle"))
-		toolVersion = '9.0'
-	}
+//	checkstyle {
+//		configDirectory.set(rootProject.file("src/checkstyle"))
+//		toolVersion = '9.0'
+//	}
 
 	jacocoTestReport {
 		reports {
@@ -305,8 +321,8 @@ project ('spring-kafka') {
 		api ("org.springframework.retry:spring-retry:$springRetryVersion") {
 			exclude group: 'org.springframework'
 		}
-		api "org.apache.kafka:kafka-clients:$kafkaVersion"
-		optionalApi "org.apache.kafka:kafka-streams:$kafkaVersion"
+		optionalApi "org.apache.kafka:kafka-clients:$kafkaVersion"
+		optionalApi "org.apache.kafka:kafka-streams:3.2.3"
 
 		optionalApi 'com.fasterxml.jackson.core:jackson-core'
 		optionalApi 'com.fasterxml.jackson.core:jackson-databind'
@@ -324,67 +340,67 @@ project ('spring-kafka') {
 		optionalApi "com.jayway.jsonpath:json-path:$jaywayJsonPathVersion"
 
 		optionalApi 'io.projectreactor:reactor-core'
-		optionalApi 'io.projectreactor.kafka:reactor-kafka'
+		optionalApi 'com.omofresh:reactor-kafka:1.3.16-02090939'
 		optionalApi "io.micrometer:micrometer-core:$micrometerVersion"
 
-		testImplementation project (':spring-kafka-test')
+//		testImplementation project (':spring-kafka-test')
 		testImplementation 'io.projectreactor:reactor-test'
 		testImplementation "org.mockito:mockito-junit-jupiter:$mockitoVersion"
 		testImplementation "org.hibernate.validator:hibernate-validator:$hibernateValidationVersion"
 	}
 }
 
-project ('spring-kafka-test') {
-	description = 'Spring Kafka Test Support'
+//project ('spring-kafka-test') {
+//	description = 'Spring Kafka Test Support'
+//
+//	dependencies {
+//		api 'org.springframework:spring-context'
+//		api 'org.springframework:spring-test'
+//		api ("org.springframework.retry:spring-retry:$springRetryVersion") {
+//			exclude group: 'org.springframework'
+//		}
+//
+//		api ("org.apache.zookeeper:zookeeper:$zookeeperVersion") {
+//			exclude group: 'org.slf4j', module: 'slf4j-log4j12'
+//			exclude group: 'log4j'
+//		}
+//		api "org.apache.kafka:kafka-clients:$kafkaVersion:test"
+////		api "org.apache.kafka:kafka-metadata:$kafkaVersion"
+////		api "org.apache.kafka:kafka-streams-test-utils:$kafkaVersion"
+////		api "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion"
+////		api "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion:test"
+//		api 'org.junit.jupiter:junit-jupiter-api'
+//		optionalApi "org.hamcrest:hamcrest-core:$hamcrestVersion"
+//		optionalApi "org.mockito:mockito-core:$mockitoVersion"
+//		optionalApi ("junit:junit:$junit4Version") {
+//			exclude group: 'org.hamcrest', module: 'hamcrest-core'
+//		}
+//		optionalApi "org.apache.logging.log4j:log4j-core:$log4jVersion"
+//	}
+//}
 
-	dependencies {
-		api 'org.springframework:spring-context'
-		api 'org.springframework:spring-test'
-		api ("org.springframework.retry:spring-retry:$springRetryVersion") {
-			exclude group: 'org.springframework'
-		}
-
-		api ("org.apache.zookeeper:zookeeper:$zookeeperVersion") {
-			exclude group: 'org.slf4j', module: 'slf4j-log4j12'
-			exclude group: 'log4j'
-		}
-		api "org.apache.kafka:kafka-clients:$kafkaVersion:test"
-		api "org.apache.kafka:kafka-metadata:$kafkaVersion"
-		api "org.apache.kafka:kafka-streams-test-utils:$kafkaVersion"
-		api "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion"
-		api "org.apache.kafka:kafka_$scalaVersion:$kafkaVersion:test"
-		api 'org.junit.jupiter:junit-jupiter-api'
-		optionalApi "org.hamcrest:hamcrest-core:$hamcrestVersion"
-		optionalApi "org.mockito:mockito-core:$mockitoVersion"
-		optionalApi ("junit:junit:$junit4Version") {
-			exclude group: 'org.hamcrest', module: 'hamcrest-core'
-		}
-		optionalApi "org.apache.logging.log4j:log4j-core:$log4jVersion"
-	}
-}
-
-project ('spring-kafka-docs') {
-	description = 'Spring Kafka Code Snippets For Docs'
-
-	dependencies {
-		api "org.springframework.boot:spring-boot-starter:$springBootVersion"
-		api project (':spring-kafka')
-		optionalApi 'org.jetbrains.kotlin:kotlin-stdlib'
-		optionalApi 'com.fasterxml.jackson.core:jackson-core'
-		optionalApi 'com.fasterxml.jackson.core:jackson-databind'
-	}
-
-	compileKotlin {
-		kotlinOptions {
-			jvmTarget = '1.8'
-		}
-	}
-
-	sonarqube {
-		skipProject = true
-	}
-
-}
+//project ('spring-kafka-docs') {
+//	description = 'Spring Kafka Code Snippets For Docs'
+//
+//	dependencies {
+//		api "org.springframework.boot:spring-boot-starter:$springBootVersion"
+//		api project (':spring-kafka')
+//		optionalApi 'org.jetbrains.kotlin:kotlin-stdlib'
+//		optionalApi 'com.fasterxml.jackson.core:jackson-core'
+//		optionalApi 'com.fasterxml.jackson.core:jackson-databind'
+//	}
+//
+//	compileKotlin {
+//		kotlinOptions {
+//			jvmTarget = '1.8'
+//		}
+//	}
+//
+//	sonarqube {
+//		skipProject = true
+//	}
+//
+//}
 
 sonarqube {
 	properties {
@@ -550,7 +566,7 @@ task distZip(type: Zip, dependsOn: [docsZip]) { //, schemaZip]) {
 		into ("${baseDir}/libs") {
 			from subproject.jar
 			from subproject.sourcesJar
-			from subproject.javadocJar
+//			from subproject.javadocJar
 		}
 	}
 }

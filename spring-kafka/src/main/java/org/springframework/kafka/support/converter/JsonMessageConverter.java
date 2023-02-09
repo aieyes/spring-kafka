@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2021 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,7 +28,6 @@ import org.springframework.kafka.support.JacksonUtils;
 import org.springframework.kafka.support.KafkaNull;
 import org.springframework.kafka.support.mapping.DefaultJackson2JavaTypeMapper;
 import org.springframework.kafka.support.mapping.Jackson2JavaTypeMapper;
-import org.springframework.kafka.support.mapping.Jackson2JavaTypeMapper.TypePrecedence;
 import org.springframework.messaging.Message;
 import org.springframework.util.Assert;
 
@@ -84,7 +83,6 @@ public class JsonMessageConverter extends MessagingMessageConverter {
 		return this.objectMapper;
 	}
 
-	@Override
 	protected Headers initialRecordHeaders(Message<?> message) {
 		RecordHeaders headers = new RecordHeaders();
 		this.typeMapper.fromClass(message.getPayload().getClass(), headers);
@@ -130,9 +128,7 @@ public class JsonMessageConverter extends MessagingMessageConverter {
 	}
 
 	private JavaType determineJavaType(ConsumerRecord<?, ?> record, Type type) {
-		JavaType javaType = this.typeMapper.getTypePrecedence().equals(TypePrecedence.INFERRED) && type != null
-				? TypeFactory.defaultInstance().constructType(type)
-				: this.typeMapper.toJavaType(record.headers());
+		JavaType javaType = TypeFactory.defaultInstance().constructType(type);
 		if (javaType == null) { // no headers
 			if (type != null) {
 				javaType = TypeFactory.defaultInstance().constructType(type);

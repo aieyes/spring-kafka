@@ -33,7 +33,7 @@ import org.springframework.util.ObjectUtils;
  * @author Marius Bogoevici
  * @author Gary Russell
  */
-public class LoggingProducerListener<K, V> implements ProducerListener<K, V> {
+public class LoggingProducerListener<K, V> extends ProducerListenerAdapter<K, V> {
 
 	/**
 	 * Default max content logged.
@@ -88,6 +88,27 @@ public class LoggingProducerListener<K, V> implements ProducerListener<K, V> {
 			logOutput.append(":");
 			return logOutput.toString();
 		});
+	}
+
+	@Override
+	public void onError(String topic, Integer partition, K key, V value, Exception exception) {
+		if (logger.isErrorEnabled()) {
+			StringBuffer logOutput = new StringBuffer();
+			logOutput.append("Exception thrown when sending a message");
+			if (this.includeContents) {
+				logOutput.append(" with key='" + this.toDisplayString(ObjectUtils.nullSafeToString(key), this.maxContentLogged) + "'");
+				logOutput.append(" and payload='" + this.toDisplayString(ObjectUtils.nullSafeToString(value), this.maxContentLogged) + "'");
+			}
+
+			logOutput.append(" to topic " + topic);
+			if (partition != null) {
+				logOutput.append(" and partition " + partition);
+			}
+
+			logOutput.append(":");
+			logger.error(exception, logOutput);
+		}
+
 	}
 
 	private String keyOrValue(Object keyOrValue) {

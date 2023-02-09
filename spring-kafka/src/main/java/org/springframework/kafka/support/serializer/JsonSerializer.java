@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2021 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -191,7 +191,6 @@ public class JsonSerializer<T> implements Serializer<T> {
 		return mappingsMap;
 	}
 
-	@Override
 	@Nullable
 	public byte[] serialize(String topic, Headers headers, @Nullable T data) {
 		if (data == null) {

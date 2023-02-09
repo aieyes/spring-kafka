@@ -1,5 +1,5 @@
 /*
- * Copyright 2015-2021 the original author or authors.
+ * Copyright 2015-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -68,10 +68,8 @@ public interface KafkaOperations<K, V> {
 	 * Send the data to the default topic with no key or partition.
 	 * @param data The data.
 	 * @return a Future for the {@link SendResult}.
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> sendDefault(V data);
 
 	/**
@@ -79,10 +77,8 @@ public interface KafkaOperations<K, V> {
 	 * @param key the key.
 	 * @param data The data.
 	 * @return a Future for the {@link SendResult}.
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> sendDefault(K key, V data);
 
 	/**
@@ -91,10 +87,8 @@ public interface KafkaOperations<K, V> {
 	 * @param key the key.
 	 * @param data the data.
 	 * @return a Future for the {@link SendResult}.
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> sendDefault(Integer partition, K key, V data);
 
 	/**
@@ -105,10 +99,8 @@ public interface KafkaOperations<K, V> {
 	 * @param data the data.
 	 * @return a Future for the {@link SendResult}.
 	 * @since 1.3
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> sendDefault(Integer partition, Long timestamp, K key, V data);
 
 	/**
@@ -116,10 +108,8 @@ public interface KafkaOperations<K, V> {
 	 * @param topic the topic.
 	 * @param data The data.
 	 * @return a Future for the {@link SendResult}.
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> send(String topic, V data);
 
 	/**
@@ -128,10 +118,8 @@ public interface KafkaOperations<K, V> {
 	 * @param key the key.
 	 * @param data The data.
 	 * @return a Future for the {@link SendResult}.
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> send(String topic, K key, V data);
 
 	/**
@@ -141,10 +129,8 @@ public interface KafkaOperations<K, V> {
 	 * @param key the key.
 	 * @param data the data.
 	 * @return a Future for the {@link SendResult}.
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> send(String topic, Integer partition, K key, V data);
 
 	/**
@@ -156,10 +142,8 @@ public interface KafkaOperations<K, V> {
 	 * @param data the data.
 	 * @return a Future for the {@link SendResult}.
 	 * @since 1.3
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> send(String topic, Integer partition, Long timestamp, K key, V data);
 
 	/**
@@ -167,10 +151,8 @@ public interface KafkaOperations<K, V> {
 	 * @param record the record.
 	 * @return a Future for the {@link SendResult}.
 	 * @since 1.3
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> send(ProducerRecord<K, V> record);
 
 	/**
@@ -178,13 +160,11 @@ public interface KafkaOperations<K, V> {
 	 * may be converted before sending.
 	 * @param message the message to send.
 	 * @return a Future for the {@link SendResult}.
-	 * @deprecated see {@link #usingCompletableFuture()}
 	 * @see org.springframework.kafka.support.KafkaHeaders#TOPIC
 	 * @see org.springframework.kafka.support.KafkaHeaders#PARTITION
 	 * @see org.springframework.kafka.support.KafkaHeaders#KEY
 	 * @see #usingCompletableFuture()
 	 */
-	@Deprecated
 	ListenableFuture<SendResult<K, V>> send(Message<?> message);
 
 	/**
@@ -253,7 +233,6 @@ public interface KafkaOperations<K, V> {
 	 * @param offsets The offsets.
 	 * @param consumerGroupId the consumer's group.id.
 	 * @since 1.3
-	 * @deprecated in the 3.0.0 KafkaProducer.
 	 */
 	@Deprecated
 	void sendOffsetsToTransaction(Map<TopicPartition, OffsetAndMetadata> offsets, String consumerGroupId);
@@ -268,7 +247,6 @@ public interface KafkaOperations<K, V> {
 	 * @param offsets The offsets.
 	 * @param groupMetadata the consumer group metadata.
 	 * @since 2.5
-	 * @see Producer#sendOffsetsToTransaction(Map, ConsumerGroupMetadata)
 	 */
 	default void sendOffsetsToTransaction(Map<TopicPartition, OffsetAndMetadata> offsets,
 			ConsumerGroupMetadata groupMetadata) {

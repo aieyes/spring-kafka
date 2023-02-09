@@ -267,17 +267,14 @@ public class DeadLetterPublishingRecovererFactory {
 	}
 
 	private static String getRecordInfo(ConsumerRecord<?, ?> cr) {
-		Header originalTopicHeader = cr.headers().lastHeader(KafkaHeaders.ORIGINAL_TOPIC);
 		return String.format("topic = %s, partition = %s, offset = %s, main topic = %s",
-				cr.topic(), cr.partition(), cr.offset(),
-				originalTopicHeader != null ? new String(originalTopicHeader.value()) : cr.topic());
+				cr.topic(), cr.partition(), cr.offset(), cr.topic());
 	}
 
 	/**
 	 * Creates and returns the {@link TopicPartition}, where the original record should be forwarded.
 	 * By default, it will use the partition same as original record's partition, in the next destination topic.
 	 *
-	 * <p>{@link DeadLetterPublishingRecoverer#checkPartition} has logic to check whether that partition exists,
 	 * and if it doesn't it sets -1, to allow the Producer itself to assign a partition to the record.</p>
 	 *
 	 * <p>Subclasses can inherit from this method to override the implementation, if necessary.</p>
@@ -295,20 +292,6 @@ public class DeadLetterPublishingRecovererFactory {
 	}
 
 	private int getAttempts(ConsumerRecord<?, ?> consumerRecord) {
-		Header header = consumerRecord.headers().lastHeader(RetryTopicHeaders.DEFAULT_HEADER_ATTEMPTS);
-		if (header != null) {
-			byte[] value = header.value();
-			if (value.length == Byte.BYTES) { // backwards compatibility
-				return value[0];
-			}
-			else if (value.length == Integer.BYTES) {
-				return ByteBuffer.wrap(value).getInt();
-			}
-			else {
-				LOGGER.debug(() -> "Unexected size for " + RetryTopicHeaders.DEFAULT_HEADER_ATTEMPTS + " header: "
-						+ value.length);
-			}
-		}
 		return 1;
 	}
 
@@ -379,8 +362,7 @@ public class DeadLetterPublishingRecovererFactory {
 	}
 
 	private Header getOriginaTimeStampHeader(ConsumerRecord<?, ?> consumerRecord) {
-		return consumerRecord.headers()
-					.lastHeader(RetryTopicHeaders.DEFAULT_HEADER_ORIGINAL_TIMESTAMP);
+		return null;
 	}
 
 	private enum ListenerExceptionLoggingStrategy {

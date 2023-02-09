@@ -46,6 +46,8 @@ public interface RecordMessageConverter extends MessageConverter {
 	Message<?> toMessage(ConsumerRecord<?, ?> record, Acknowledgment acknowledgment, Consumer<?, ?> consumer,
 			Type payloadType);
 
+	Message<?> toMessage(ConsumerRecord<?, ?> var1, Acknowledgment var2, Type var3);
+
 	/**
 	 * Convert a message to a producer record.
 	 * @param message the message.
@@ -53,5 +55,6 @@ public interface RecordMessageConverter extends MessageConverter {
 	 * @return the producer record.
 	 */
 	ProducerRecord<?, ?> fromMessage(Message<?> message, String defaultTopic);
+
 
 }

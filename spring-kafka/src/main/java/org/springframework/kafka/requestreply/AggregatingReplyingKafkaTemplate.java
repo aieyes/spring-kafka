@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,30 +16,19 @@
 
 package org.springframework.kafka.requestreply;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.function.BiPredicate;
-import java.util.stream.Collectors;
-
 import org.apache.kafka.clients.consumer.Consumer;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.header.Header;
-import org.apache.kafka.common.header.internals.RecordHeader;
-
 import org.springframework.kafka.core.ProducerFactory;
 import org.springframework.kafka.listener.BatchConsumerAwareMessageListener;
 import org.springframework.kafka.listener.ContainerProperties.AckMode;
 import org.springframework.kafka.listener.GenericMessageListenerContainer;
-import org.springframework.kafka.support.KafkaUtils;
 import org.springframework.util.Assert;
+
+import java.time.Duration;
+import java.util.*;
+import java.util.function.BiPredicate;
+import java.util.stream.Collectors;
 
 /**
  * A replying template that aggregates multiple replies with the same correlation id.
@@ -122,42 +111,6 @@ public class AggregatingReplyingKafkaTemplate<K, V, R>
 
 	@Override
 	public void onMessage(List<ConsumerRecord<K, Collection<ConsumerRecord<K, R>>>> data, Consumer<?, ?> consumer) {
-		List<ConsumerRecord<K, Collection<ConsumerRecord<K, R>>>> completed = new ArrayList<>();
-		String correlationHeaderName = getCorrelationHeaderName();
-		data.forEach(record -> {
-			Header correlation = record.headers().lastHeader(correlationHeaderName);
-			if (correlation == null) {
-				this.logger.error(() -> "No correlationId found in reply: " + KafkaUtils.format(record)
-						+ " - to use request/reply semantics, the responding server must return the correlation id "
-						+ " in the '" + correlationHeaderName + "' header");
-			}
-			else {
-				CorrelationKey correlationId = new CorrelationKey(correlation.value());
-				synchronized (this) {
-					if (isPending(correlationId)) {
-						List<ConsumerRecord<K, R>> list = addToCollection(record, correlationId).stream()
-								.map(RecordHolder::getRecord)
-								.collect(Collectors.toList());
-						if (this.releaseStrategy.test(list, false)) {
-							ConsumerRecord<K, Collection<ConsumerRecord<K, R>>> done =
-									new ConsumerRecord<>(AGGREGATED_RESULTS_TOPIC, 0, 0L, null, list);
-							done.headers()
-									.add(new RecordHeader(correlationHeaderName, correlationId
-											.getCorrelationId()));
-							this.pending.remove(correlationId);
-							checkOffsetsAndCommitIfNecessary(list, consumer);
-							completed.add(done);
-						}
-					}
-					else {
-						logLateArrival(record, correlationId);
-					}
-				}
-			}
-		});
-		if (completed.size() > 0) {
-			super.onMessage(completed);
-		}
 	}
 
 	@Override
@@ -175,19 +128,6 @@ public class AggregatingReplyingKafkaTemplate<K, V, R>
 			}
 		}
 		return false;
-	}
-
-	private void checkOffsetsAndCommitIfNecessary(List<ConsumerRecord<K, R>> list, Consumer<?, ?> consumer) {
-		list.forEach(record -> this.offsets.compute(
-				new TopicPartition(record.topic(), record.partition()),
-				(k, v) -> v == null ? record.offset() + 1 : Math.max(v, record.offset() + 1)));
-		if (this.pending.isEmpty() && !this.offsets.isEmpty()) {
-			consumer.commitSync(this.offsets.entrySet().stream()
-							.collect(Collectors.toMap(Map.Entry::getKey,
-									entry -> new OffsetAndMetadata(entry.getValue()))),
-					this.commitTimeout);
-			this.offsets.clear();
-		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

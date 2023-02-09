@@ -59,12 +59,7 @@ import org.apache.kafka.clients.producer.Producer;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.TopicPartition;
-import org.apache.kafka.common.errors.AuthenticationException;
-import org.apache.kafka.common.errors.AuthorizationException;
-import org.apache.kafka.common.errors.FencedInstanceIdException;
-import org.apache.kafka.common.errors.ProducerFencedException;
-import org.apache.kafka.common.errors.RebalanceInProgressException;
-import org.apache.kafka.common.errors.WakeupException;
+import org.apache.kafka.common.errors.*;
 import org.apache.kafka.common.header.Header;
 import org.apache.kafka.common.header.internals.RecordHeader;
 
@@ -122,7 +117,6 @@ import org.springframework.transaction.support.TransactionTemplate;
 import org.springframework.util.Assert;
 import org.springframework.util.ClassUtils;
 import org.springframework.util.CollectionUtils;
-import org.springframework.util.StringUtils;
 import org.springframework.util.concurrent.ListenableFuture;
 import org.springframework.util.concurrent.ListenableFutureCallback;
 
@@ -163,7 +157,7 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 
 	private static final int DEFAULT_ACK_TIME = 5000;
 
-	private static final Map<String, Object> CONSUMER_CONFIG_DEFAULTS = ConsumerConfig.configDef().defaultValues();
+//	private static final Map<String, Object> CONSUMER_CONFIG_DEFAULTS = ConsumerConfig.configDef().defaultValues();
 
 	private final AbstractMessageListenerContainer<K, V> thisOrParentContainer;
 
@@ -791,7 +785,6 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 		@SuppressWarnings(UNCHECKED)
 		ListenerConsumer(GenericMessageListener<?> listener, ListenerType listenerType) {
 			Properties consumerProperties = propertiesFromProperties();
-			checkGroupInstance(consumerProperties, KafkaMessageListenerContainer.this.consumerFactory);
 			this.autoCommit = determineAutoCommit(consumerProperties);
 			this.consumer =
 					KafkaMessageListenerContainer.this.consumerFactory.createConsumer(
@@ -947,23 +940,6 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 			return "unknown.client.id";
 		}
 
-		private void checkGroupInstance(Properties properties, ConsumerFactory<K, V> consumerFactory) {
-			String groupInstance = properties.getProperty(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG);
-			if (!StringUtils.hasText(groupInstance)) {
-				Object factoryConfig = consumerFactory.getConfigurationProperties()
-						.get(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG);
-				if (factoryConfig instanceof String) {
-					groupInstance = (String) factoryConfig;
-				}
-			}
-			if (StringUtils.hasText(KafkaMessageListenerContainer.this.clientIdSuffix)
-					&& StringUtils.hasText(groupInstance)) {
-
-				properties.setProperty(ConsumerConfig.GROUP_INSTANCE_ID_CONFIG,
-						groupInstance + KafkaMessageListenerContainer.this.clientIdSuffix);
-			}
-		}
-
 		@SuppressWarnings(DEPRECATION)
 		private boolean setupSubBatchPerPartition() {
 			Boolean subBatching = this.containerProperties.getSubBatchPerPartition();
@@ -1038,7 +1014,7 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 							+ ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG
 							+ "'; using Kafka default.");
 				}
-				return (int) CONSUMER_CONFIG_DEFAULTS.get(ConsumerConfig.MAX_POLL_INTERVAL_MS_CONFIG);
+				return 0;
 			}
 		}
 
@@ -1106,30 +1082,19 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 			}
 			else {
 				Object timeout = this.containerProperties.getKafkaConsumerProperties()
-						.get(ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG);
+						.get(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG);
 				if (timeout == null) {
 					timeout = KafkaMessageListenerContainer.this.consumerFactory.getConfigurationProperties()
-							.get(ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG);
+							.get(ConsumerConfig.REQUEST_TIMEOUT_MS_CONFIG);
 				}
 				if (timeout instanceof Duration) {
 					return (Duration) timeout;
-				}
-				else if (timeout instanceof Number) {
+				} else if (timeout instanceof Number) {
 					return Duration.ofMillis(((Number) timeout).longValue());
-				}
-				else if (timeout instanceof String) {
+				} else if (timeout instanceof String) {
 					return Duration.ofMillis(Long.parseLong((String) timeout));
-				}
-				else {
-					if (timeout != null) {
-						Object timeoutToLog = timeout;
-						this.logger.warn(() -> "Unexpected type: " + timeoutToLog.getClass().getName()
-							+ " in property '"
-							+ ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG
-							+ "'; defaulting to Kafka default for sync commit timeouts");
-					}
-					return Duration
-							.ofMillis((int) CONSUMER_CONFIG_DEFAULTS.get(ConsumerConfig.DEFAULT_API_TIMEOUT_MS_CONFIG));
+				} else {
+					return null;
 				}
 			}
 		}
@@ -1302,8 +1267,6 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 				}
 				catch (FencedInstanceIdException fie) {
 					this.fatalError = true;
-					ListenerConsumer.this.logger.error(fie, "'" + ConsumerConfig.GROUP_INSTANCE_ID_CONFIG
-							+ "' has been fenced");
 					exitThrowable = fie;
 					break;
 				}
@@ -1583,7 +1546,7 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 		private ConsumerRecords<K, V> pollConsumer() {
 			beforePoll();
 			try {
-				return this.consumer.poll(this.pollTimeout);
+				return this.consumer.poll(this.pollTimeout.toMillis());
 			}
 			catch (WakeupException ex) {
 				return ConsumerRecords.empty();
@@ -2112,7 +2075,7 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 			}
 			catch (ProducerFencedException | FencedInstanceIdException e) {
 				this.logger.error(e, "Producer or '"
-						+ ConsumerConfig.GROUP_INSTANCE_ID_CONFIG
+						+ ConsumerConfig.GROUP_ID_CONFIG
 						+ "' fenced during transaction");
 				if (this.containerProperties.isStopContainerWhenFenced()) {
 					throw new StopAfterFenceException("Container stopping due to fencing", e);
@@ -2610,7 +2573,6 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 				bb.putInt(this.deliveryAttemptAware
 						.deliveryAttempt(
 								new TopicPartitionOffset(record.topic(), record.partition(), record.offset())));
-				record.headers().add(new RecordHeader(KafkaHeaders.DELIVERY_ATTEMPT, buff));
 			}
 			if (this.listenerinfo != null) {
 				listenerInfo(record);
@@ -2618,7 +2580,6 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 		}
 
 		private void listenerInfo(final ConsumerRecord<K, V> record) {
-			record.headers().add(this.infoHeader);
 		}
 
 		private void handleNack(final ConsumerRecords<K, V> records, final ConsumerRecord<K, V> record) {
@@ -2942,10 +2903,8 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 		@SuppressWarnings(DEPRECATION)
 		private void doSendOffsets(Producer<?, ?> prod, Map<TopicPartition, OffsetAndMetadata> commits) {
 			if (this.eosMode.getMode().equals(EOSMode.V1)) {
-				prod.sendOffsetsToTransaction(commits, this.consumerGroupId);
 			}
 			else {
-				prod.sendOffsetsToTransaction(commits, this.consumer.groupMetadata());
 			}
 			if (this.fixTxOffsets) {
 				this.lastCommits.putAll(commits);
@@ -3194,7 +3153,7 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 
 		private void doCommitSync(Map<TopicPartition, OffsetAndMetadata> commits, int retries) {
 			try {
-				this.consumer.commitSync(commits, this.syncCommitTimeout);
+				this.consumer.commitSync(commits);
 				if (this.fixTxOffsets) {
 					this.lastCommits.putAll(commits);
 				}
@@ -3547,13 +3506,9 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 				// and rebalance would cause it to reset at the end
 				// see https://github.com/spring-projects/spring-kafka/issues/110
 				Map<TopicPartition, OffsetAndMetadata> offsetsToCommit = new HashMap<>();
-				Map<TopicPartition, OffsetAndMetadata> committed =
-						ListenerConsumer.this.consumer.committed(new HashSet<>(partitions));
 				for (TopicPartition partition : partitions) {
 					try {
-						if (committed.get(partition) == null) { // no existing commit for this group
-							offsetsToCommit.put(partition, createOffsetAndMetadata(ListenerConsumer.this.consumer.position(partition)));
-						}
+						offsetsToCommit.put(partition, createOffsetAndMetadata(ListenerConsumer.this.consumer.position(partition)));
 					}
 					catch (NoOffsetForPartitionException e) {
 						ListenerConsumer.this.fatalError = true;
@@ -3604,8 +3559,7 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 					ContainerProperties containerProps = KafkaMessageListenerContainer.this.getContainerProperties();
 					if (containerProps.isSyncCommits()) {
 						try {
-							ListenerConsumer.this.consumer.commitSync(offsetsToCommit,
-									containerProps.getSyncCommitTimeout());
+							ListenerConsumer.this.consumer.commitSync(offsetsToCommit);
 						}
 						catch (RetriableCommitFailedException | RebalanceInProgressException e) {
 							// ignore since this is on assignment anyway
@@ -3617,13 +3571,10 @@ public class KafkaMessageListenerContainer<K, V> // NOSONAR line count
 				}
 			}
 
-			@Override
 			public void onPartitionsLost(Collection<TopicPartition> partitions) {
 				if (this.consumerAwareListener != null) {
 					this.consumerAwareListener.onPartitionsLost(ListenerConsumer.this.consumer, partitions);
-				}
-				else {
-					this.userListener.onPartitionsLost(partitions);
+				} else {
 				}
 				onPartitionsRevoked(partitions);
 			}

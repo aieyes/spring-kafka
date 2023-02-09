@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2022 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,10 +18,8 @@ package org.springframework.kafka.streams.messaging;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.header.Headers;
 import org.apache.kafka.common.record.TimestampType;
 import org.apache.kafka.streams.KeyValue;
@@ -75,23 +73,21 @@ public class MessagingTransformer<K, V, R> implements Transformer<K, V, KeyValue
 	@Override
 	public KeyValue<K, R> transform(K key, V value) {
 		Headers headers = this.processorContext.headers();
-		ConsumerRecord<Object, Object> record = new ConsumerRecord<Object, Object>(this.processorContext.topic(),
-				this.processorContext.partition(), this.processorContext.offset(),
-				this.processorContext.timestamp(), TimestampType.NO_TIMESTAMP_TYPE,
-				0, 0,
-				key, value,
-				headers, Optional.empty());
+		ConsumerRecord<Object, Object> record = new ConsumerRecord<>(
+				this.processorContext.topic(),
+				this.processorContext.partition(),
+				this.processorContext.offset(),
+				this.processorContext.timestamp(),
+				TimestampType.NO_TIMESTAMP_TYPE,
+				0L,
+				0,
+				0,
+				key, value);
 		Message<?> message = this.converter.toMessage(record, null, null, null);
 		message = this.function.exchange(message);
 		List<String> headerList = new ArrayList<>();
 		headers.forEach(header -> headerList.add(header.key()));
-		headerList.forEach(name -> headers.remove(name));
-		ProducerRecord<?, ?> fromMessage = this.converter.fromMessage(message, "dummy");
-		fromMessage.headers().forEach(header -> {
-			if (!header.key().equals(KafkaHeaders.TOPIC)) {
-				headers.add(header);
-			}
-		});
+		headerList.forEach(headers::remove);
 		Object key2 = message.getHeaders().get(KafkaHeaders.KEY);
 		return new KeyValue(key2 == null ? key : key2, message.getPayload());
 	}

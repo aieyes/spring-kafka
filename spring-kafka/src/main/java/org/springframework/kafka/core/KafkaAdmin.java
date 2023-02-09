@@ -263,11 +263,9 @@ public class KafkaAdmin extends KafkaResourceFactory
 	@Override
 	public Map<String, TopicDescription> describeTopics(String... topicNames) {
 		try (AdminClient admin = createAdmin()) {
-			Map<String, TopicDescription> results = new HashMap<>();
 			DescribeTopicsResult topics = admin.describeTopics(Arrays.asList(topicNames));
 			try {
-				results.putAll(topics.allTopicNames().get(this.operationTimeout, TimeUnit.SECONDS));
-				return results;
+				return new HashMap<>(topics.all().get(this.operationTimeout, TimeUnit.SECONDS));
 			}
 			catch (InterruptedException ie) {
 				Thread.currentThread().interrupt();
@@ -399,7 +397,7 @@ public class KafkaAdmin extends KafkaResourceFactory
 			DescribeTopicsResult topicInfo, List<NewTopic> topicsToAdd) {
 
 		Map<String, NewPartitions> topicsToModify = new HashMap<>();
-		topicInfo.topicNameValues().forEach((n, f) -> {
+		topicInfo.values().forEach((n, f) -> {
 			NewTopic topic = topicNameToTopic.get(n);
 			try {
 				TopicDescription topicDescription = f.get(this.operationTimeout, TimeUnit.SECONDS);

@@ -262,7 +262,7 @@ public abstract class FailedBatchProcessor extends FailedRecordProcessor {
 		boolean syncCommits = container.getContainerProperties().isSyncCommits();
 		Duration timeout = container.getContainerProperties().getSyncCommitTimeout();
 		if (syncCommits) {
-			consumer.commitSync(offsets, timeout);
+			consumer.commitSync(offsets);
 		}
 		else {
 			OffsetCommitCallback commitCallback = container.getContainerProperties().getCommitCallback();

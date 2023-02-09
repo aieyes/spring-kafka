@@ -18,6 +18,7 @@ package org.springframework.kafka.listener.adapter;
 
 import org.apache.kafka.clients.producer.RecordMetadata;
 import org.apache.kafka.common.record.TimestampType;
+import org.apache.kafka.common.requests.ProduceResponse;
 
 /**
  * Used to provide a listener method argument when the user supplies such a parameter.
@@ -40,7 +41,7 @@ public class ConsumerRecordMetadata {
 	}
 
 	public boolean hasOffset() {
-		return this.delegate.hasOffset();
+		return this.delegate.offset() != ProduceResponse.INVALID_OFFSET;
 	}
 
 	public long offset() {
@@ -48,7 +49,7 @@ public class ConsumerRecordMetadata {
 	}
 
 	public boolean hasTimestamp() {
-		return this.delegate.hasTimestamp();
+		return this.delegate.timestamp() != -1L;
 	}
 
 	public long timestamp() {

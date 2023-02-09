@@ -1,5 +1,5 @@
 /*
- * Copyright 2018-2022 the original author or authors.
+ * Copyright 2018-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -214,7 +214,7 @@ public final class SeekUtils {
 						new TopicPartition(record.topic(), record.partition()),
 						ListenerUtils.createOffsetAndMetadata(container, record.offset() + 1));
 				if (container.getContainerProperties().isSyncCommits()) {
-					consumer.commitSync(offsetToCommit, container.getContainerProperties().getSyncCommitTimeout());
+					consumer.commitSync(offsetToCommit);
 				}
 				else {
 					OffsetCommitCallback commitCallback = container.getContainerProperties().getCommitCallback();

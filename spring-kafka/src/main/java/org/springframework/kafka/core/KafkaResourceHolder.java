@@ -1,5 +1,5 @@
 /*
- * Copyright 2017-2019 the original author or authors.
+ * Copyright 2017-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 package org.springframework.kafka.core;
 
 import java.time.Duration;
+import java.util.concurrent.TimeUnit;
 
 import org.apache.kafka.clients.producer.Producer;
 
@@ -55,15 +56,14 @@ public class KafkaResourceHolder<K, V> extends ResourceHolderSupport {
 	}
 
 	public void commit() {
-		this.producer.commitTransaction();
+		this.producer.flush();
 	}
 
 	public void close() {
-		this.producer.close(this.closeTimeout);
+		this.producer.close(this.closeTimeout.toMillis(), TimeUnit.MILLISECONDS);
 	}
 
 	public void rollback() {
-		this.producer.abortTransaction();
 	}
 
 }

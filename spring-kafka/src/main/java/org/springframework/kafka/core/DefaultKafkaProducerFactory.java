@@ -1,5 +1,5 @@
 /*
- * Copyright 2016-2022 the original author or authors.
+ * Copyright 2016-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,40 +16,14 @@
 
 package org.springframework.kafka.core;
 
-import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.Future;
-import java.util.concurrent.LinkedBlockingQueue;
-import java.util.concurrent.atomic.AtomicInteger;
-import java.util.function.BiPredicate;
-import java.util.function.Supplier;
-
 import org.apache.commons.logging.LogFactory;
-import org.apache.kafka.clients.consumer.ConsumerGroupMetadata;
-import org.apache.kafka.clients.consumer.OffsetAndMetadata;
-import org.apache.kafka.clients.producer.Callback;
-import org.apache.kafka.clients.producer.KafkaProducer;
-import org.apache.kafka.clients.producer.Producer;
-import org.apache.kafka.clients.producer.ProducerConfig;
-import org.apache.kafka.clients.producer.ProducerRecord;
-import org.apache.kafka.clients.producer.RecordMetadata;
+import org.apache.kafka.clients.producer.*;
 import org.apache.kafka.common.Metric;
 import org.apache.kafka.common.MetricName;
 import org.apache.kafka.common.PartitionInfo;
-import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.OutOfOrderSequenceException;
-import org.apache.kafka.common.errors.ProducerFencedException;
 import org.apache.kafka.common.errors.TimeoutException;
 import org.apache.kafka.common.serialization.Serializer;
-
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanNameAware;
 import org.springframework.beans.factory.DisposableBean;
@@ -62,7 +36,14 @@ import org.springframework.kafka.KafkaException;
 import org.springframework.kafka.support.TransactionSupport;
 import org.springframework.lang.Nullable;
 import org.springframework.util.Assert;
-import org.springframework.util.StringUtils;
+
+import java.time.Duration;
+import java.util.*;
+import java.util.Map.Entry;
+import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.function.BiPredicate;
+import java.util.function.Supplier;
 
 /**
  * The {@link ProducerFactory} implementation for a {@code singleton} shared {@link Producer} instance.
@@ -172,8 +153,6 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 
 	/**
 	 * Construct a factory with the provided configuration and {@link Serializer}s.
-	 * Also configures a {@link #transactionIdPrefix} as a value from the
-	 * {@link ProducerConfig#TRANSACTIONAL_ID_CONFIG} if provided.
 	 * This config is going to be overridden with a suffix for target {@link Producer} instance.
 	 * The serializers' {@code configure()} methods will be called with the
 	 * configuration map.
@@ -189,10 +168,8 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 	}
 
 	/**
-	 * Construct a factory with the provided configuration and {@link Serializer}s. Also
-	 * configures a {@link #transactionIdPrefix} as a value from the
-	 * {@link ProducerConfig#TRANSACTIONAL_ID_CONFIG} if provided. This config is going to
-	 * be overridden with a suffix for target {@link Producer} instance. The serializers'
+	 * Construct a factory with the provided configuration and {@link Serializer}s.
+	 * This config is going to be overridden with a suffix for target {@link Producer} instance. The serializers'
 	 * {@code configure()} methods will be called with the configuration map unless
 	 * {@code configureSerializers} is false..
 	 * @param configs the configuration.
@@ -211,8 +188,7 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 
 	/**
 	 * Construct a factory with the provided configuration and {@link Serializer}
-	 * Suppliers. Also configures a {@link #transactionIdPrefix} as a value from the
-	 * {@link ProducerConfig#TRANSACTIONAL_ID_CONFIG} if provided. This config is going to
+	 * Suppliers. This config is going to
 	 * be overridden with a suffix for target {@link Producer} instance. When the
 	 * suppliers are invoked to get an instance, the serializers' {@code configure()}
 	 * methods will be called with the configuration map.
@@ -230,9 +206,7 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 
 	/**
 	 * Construct a factory with the provided configuration and {@link Serializer}
-	 * Suppliers. Also configures a {@link #transactionIdPrefix} as a value from the
-	 * {@link ProducerConfig#TRANSACTIONAL_ID_CONFIG} if provided. This config is going to
-	 * be overridden with a suffix for target {@link Producer} instance. When the
+	 * Suppliers. This config is going to be overridden with a suffix for target {@link Producer} instance. When the
 	 * suppliers are invoked to get an instance, the serializers' {@code configure()}
 	 * methods will be called with the configuration map unless
 	 * {@code configureSerializers} is false.
@@ -253,11 +227,6 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 		this.valueSerializerSupplier = valueSerializerSupplier(valueSerializerSupplier);
 		if (this.clientIdPrefix == null && configs.get(ProducerConfig.CLIENT_ID_CONFIG) instanceof String) {
 			this.clientIdPrefix = (String) configs.get(ProducerConfig.CLIENT_ID_CONFIG);
-		}
-		String txId = (String) this.configs.get(ProducerConfig.TRANSACTIONAL_ID_CONFIG);
-		if (StringUtils.hasText(txId)) {
-			setTransactionIdPrefix(txId);
-			this.configs.remove(ProducerConfig.TRANSACTIONAL_ID_CONFIG);
 		}
 	}
 
@@ -402,8 +371,6 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 	}
 
 	/**
-	 * Set a prefix for the {@link ProducerConfig#TRANSACTIONAL_ID_CONFIG} config. By
-	 * default a {@link ProducerConfig#TRANSACTIONAL_ID_CONFIG} value from configs is used
 	 * as a prefix in the target producer configs.
 	 * @param transactionIdPrefix the prefix.
 	 * @since 1.3
@@ -524,7 +491,6 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 	 * <p>If the {@link org.springframework.kafka.core.DefaultKafkaProducerFactory} makes a
 	 * copy of itself, the transaction id prefix is recovered from the properties. If
 	 * you want to change the ID config, add a new
-	 * {@link org.apache.kafka.clients.producer.ProducerConfig#TRANSACTIONAL_ID_CONFIG}
 	 * key to the override config.</p>
 	 * @param overrideProperties the properties to be applied to the new factory
 	 * @return {@link org.springframework.kafka.core.DefaultKafkaProducerFactory} with
@@ -564,14 +530,6 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 	 * @return the producerProperties or a copy with the transaction ID set
 	 */
 	private Map<String, Object> ensureExistingTransactionIdPrefixInProperties(Map<String, Object> producerProperties) {
-		String txIdPrefix = getTransactionIdPrefix();
-		if (StringUtils.hasText(txIdPrefix)
-				&& !producerProperties.containsKey(ProducerConfig.TRANSACTIONAL_ID_CONFIG)) {
-			Map<String, Object> producerPropertiesWithTxnId = new HashMap<>(producerProperties);
-			producerPropertiesWithTxnId.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, txIdPrefix);
-			return producerPropertiesWithTxnId;
-		}
-
 		return producerProperties;
 	}
 
@@ -628,21 +586,11 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 	@Override
 	public void updateConfigs(Map<String, Object> updates) {
 		updates.entrySet().forEach(entry -> {
-			if (entry.getKey().equals(ProducerConfig.TRANSACTIONAL_ID_CONFIG)) {
-				Assert.isTrue(entry.getValue() instanceof String, () -> "'" + ProducerConfig.TRANSACTIONAL_ID_CONFIG
-						+ "' must be a String, not a " + entry.getClass().getName());
-				Assert.isTrue(this.transactionIdPrefix != null
-								? entry.getValue() != null
-								: entry.getValue() == null,
-						"Cannot change transactional capability");
-				this.transactionIdPrefix = (String) entry.getValue();
-			}
-			else if (entry.getKey().equals(ProducerConfig.CLIENT_ID_CONFIG)) {
+			if (entry.getKey().equals(ProducerConfig.CLIENT_ID_CONFIG)) {
 				Assert.isTrue(entry.getValue() instanceof String, () -> "'" + ProducerConfig.CLIENT_ID_CONFIG
 						+ "' must be a String, not a " + entry.getClass().getName());
 				this.clientIdPrefix = (String) entry.getValue();
-			}
-			else {
+			} else {
 				this.configs.put(entry.getKey(), entry.getValue());
 			}
 		});
@@ -657,11 +605,6 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 	 * When set to 'true', the producer will ensure that exactly one copy of each message is written in the stream.
 	 */
 	private void enableIdempotentBehaviour() {
-		Object previousValue = this.configs.putIfAbsent(ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG, true);
-		if (Boolean.FALSE.equals(previousValue)) {
-			LOGGER.debug(() -> "The '" + ProducerConfig.ENABLE_IDEMPOTENCE_CONFIG
-					+ "' is set to false, may result in duplicate messages");
-		}
 	}
 
 	@Override
@@ -912,11 +855,10 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 			BiPredicate<CloseSafeProducer<K, V>, Duration> remover) {
 		Producer<K, V> newProducer = createRawProducer(getTxProducerConfigs(prefix + suffix));
 		try {
-			newProducer.initTransactions();
-		}
-		catch (RuntimeException ex) {
+			newProducer.flush();
+		} catch (RuntimeException ex) {
 			try {
-				newProducer.close(this.physicalCloseTimeout);
+				newProducer.close(this.physicalCloseTimeout.getSeconds(), TimeUnit.SECONDS);
 			}
 			catch (RuntimeException ex2) {
 				KafkaException newEx = new KafkaException("initTransactions() failed and then close() failed", ex);
@@ -1007,7 +949,6 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 	 */
 	protected Map<String, Object> getTxProducerConfigs(String transactionId) {
 		final Map<String, Object> newProducerConfigs = getProducerConfigs();
-		newProducerConfigs.put(ProducerConfig.TRANSACTIONAL_ID_CONFIG, transactionId);
 		return newProducerConfigs;
 	}
 
@@ -1115,78 +1056,15 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 		}
 
 		@Override
-		public void initTransactions() {
-			this.delegate.initTransactions();
-		}
-
-		@Override
-		public void beginTransaction() throws ProducerFencedException {
-			LOGGER.debug(() -> toString() + " beginTransaction()");
-			try {
-				this.delegate.beginTransaction();
-			}
-			catch (RuntimeException e) {
-				LOGGER.error(e, () -> "beginTransaction failed: " + this);
-				this.producerFailed = e;
-				throw e;
-			}
-		}
-
-		@SuppressWarnings("deprecation")
-		@Override
-		public void sendOffsetsToTransaction(Map<TopicPartition, OffsetAndMetadata> offsets, String consumerGroupId)
-				throws ProducerFencedException {
-
-			LOGGER.trace(() -> toString() + " sendOffsetsToTransaction(" + offsets + ", " + consumerGroupId + ")");
-			this.delegate.sendOffsetsToTransaction(offsets, consumerGroupId);
-		}
-
-		@Override
-		public void sendOffsetsToTransaction(Map<TopicPartition, OffsetAndMetadata> offsets,
-				ConsumerGroupMetadata groupMetadata) throws ProducerFencedException {
-
-			LOGGER.trace(() -> toString() + " sendOffsetsToTransaction(" + offsets + ", " + groupMetadata + ")");
-			this.delegate.sendOffsetsToTransaction(offsets, groupMetadata);
-		}
-
-		@Override
-		public void commitTransaction() throws ProducerFencedException {
-			LOGGER.debug(() -> toString() + " commitTransaction()");
-			try {
-				this.delegate.commitTransaction();
-			}
-			catch (RuntimeException e) {
-				LOGGER.error(e, () -> "commitTransaction failed: " + this);
-				this.producerFailed = e;
-				throw e;
-			}
-		}
-
-		@Override
-		public void abortTransaction() throws ProducerFencedException {
-			LOGGER.debug(() -> toString() + " abortTransaction()");
-			if (this.producerFailed != null) {
-				LOGGER.debug(() -> "abortTransaction ignored - previous txFailed: " + this.producerFailed.getMessage()
-						+ ": " + this);
-			}
-			else {
-				try {
-					this.delegate.abortTransaction();
-				}
-				catch (RuntimeException e) {
-					LOGGER.error(e, () -> "Abort failed: " + this);
-					this.producerFailed = e;
-					throw e;
-				}
-			}
-		}
-
-		@Override
 		public void close() {
 			close(null);
 		}
 
 		@Override
+		public void close(long timeout, TimeUnit unit) {
+			close(timeout, unit);
+		}
+
 		public void close(@Nullable Duration timeout) {
 			LOGGER.trace(() -> toString() + " close(" + (timeout == null ? "null" : timeout) + ")");
 			if (!this.closed) {
@@ -1204,7 +1082,7 @@ public class DefaultKafkaProducerFactory<K, V> extends KafkaResourceFactory
 		}
 
 		void closeDelegate(Duration timeout, List<Listener<K, V>> listeners) {
-			this.delegate.close(timeout == null ? this.closeTimeout : timeout);
+			this.delegate.close(timeout.toMillis(), TimeUnit.MILLISECONDS);
 			listeners.forEach(listener -> listener.producerRemoved(this.clientId, this));
 			this.closed = true;
 		}

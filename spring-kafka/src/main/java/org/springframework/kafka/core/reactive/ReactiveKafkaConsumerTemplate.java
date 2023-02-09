@@ -1,5 +1,5 @@
 /*
- * Copyright 2019-2020 the original author or authors.
+ * Copyright 2019-2023 the original author or authors.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,10 +16,7 @@
 
 package org.springframework.kafka.core.reactive;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 import java.util.function.Function;
 
 import org.apache.kafka.clients.consumer.Consumer;
@@ -147,7 +144,13 @@ public class ReactiveKafkaConsumerTemplate<K, V> {
 	}
 
 	public Mono<Map<TopicPartition, OffsetAndMetadata>> committed(Set<TopicPartition> partitions) {
-		return doOnConsumer(consumer -> consumer.committed(partitions));
+		return doOnConsumer(consumer -> {
+			Map<TopicPartition, OffsetAndMetadata> re = new HashMap<>();
+			for (TopicPartition partition : partitions) {
+				re.put(partition, consumer.committed(partition));
+			}
+			return re;
+		});
 	}
 
 	public Flux<PartitionInfo> partitionsFromConsumerFor(String topic) {

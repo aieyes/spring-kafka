@@ -72,7 +72,7 @@ public final class AdapterUtils {
 		}
 		ConsumerRecord<?, ?> record = (ConsumerRecord<?, ?>) data;
 		return new ConsumerRecordMetadata(new RecordMetadata(new TopicPartition(record.topic(), record.partition()),
-				record.offset(), 0, record.timestamp(), record.serializedKeySize(),
+				-1L, record.offset(), record.timestamp(), record.checksum(), record.serializedKeySize(),
 				record.serializedValueSize()), record.timestampType());
 	}
 
