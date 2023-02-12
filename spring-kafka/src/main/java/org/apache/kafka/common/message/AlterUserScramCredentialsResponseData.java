@@ -35,10 +35,10 @@ import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class AlterUserScramCredentialsResponseData implements ApiMessage {
@@ -227,9 +227,9 @@ public class AlterUserScramCredentialsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("user", Type.COMPACT_STRING, "The user name."),
+                new Field("user", Types.COMPACT_STRING, "The user name."),
                 new Field("error_code", Type.INT16, "The error code."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, if any."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, if any."),
                 TaggedFieldsSection.of(
                 )
             );

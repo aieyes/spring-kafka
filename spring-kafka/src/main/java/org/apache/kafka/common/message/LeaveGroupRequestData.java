@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class LeaveGroupRequestData implements ApiMessage {
@@ -66,7 +66,7 @@ public class LeaveGroupRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_4 =
         new Schema(
-            new Field("group_id", Type.COMPACT_STRING, "The ID of the group to leave."),
+            new Field("group_id", Types.COMPACT_STRING, "The ID of the group to leave."),
             new Field("members", new CompactArrayOf(MemberIdentity.SCHEMA_4), "List of leaving member identities."),
             TaggedFieldsSection.of(
             )
@@ -74,7 +74,7 @@ public class LeaveGroupRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_5 =
         new Schema(
-            new Field("group_id", Type.COMPACT_STRING, "The ID of the group to leave."),
+            new Field("group_id", Types.COMPACT_STRING, "The ID of the group to leave."),
             new Field("members", new CompactArrayOf(MemberIdentity.SCHEMA_5), "List of leaving member identities."),
             TaggedFieldsSection.of(
             )
@@ -405,17 +405,17 @@ public class LeaveGroupRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_4 =
             new Schema(
-                new Field("member_id", Type.COMPACT_STRING, "The member ID to remove from the group."),
-                new Field("group_instance_id", Type.COMPACT_NULLABLE_STRING, "The group instance ID to remove from the group."),
+                new Field("member_id", Types.COMPACT_STRING, "The member ID to remove from the group."),
+                new Field("group_instance_id", Types.COMPACT_NULLABLE_STRING, "The group instance ID to remove from the group."),
                 TaggedFieldsSection.of(
                 )
             );
         
         public static final Schema SCHEMA_5 =
             new Schema(
-                new Field("member_id", Type.COMPACT_STRING, "The member ID to remove from the group."),
-                new Field("group_instance_id", Type.COMPACT_NULLABLE_STRING, "The group instance ID to remove from the group."),
-                new Field("reason", Type.COMPACT_NULLABLE_STRING, "The reason why the member left the group."),
+                new Field("member_id", Types.COMPACT_STRING, "The member ID to remove from the group."),
+                new Field("group_instance_id", Types.COMPACT_NULLABLE_STRING, "The group instance ID to remove from the group."),
+                new Field("reason", Types.COMPACT_NULLABLE_STRING, "The reason why the member left the group."),
                 TaggedFieldsSection.of(
                 )
             );

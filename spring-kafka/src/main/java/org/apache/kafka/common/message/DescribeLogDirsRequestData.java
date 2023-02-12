@@ -42,7 +42,7 @@ import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class DescribeLogDirsRequestData implements ApiMessage {
@@ -293,7 +293,7 @@ public class DescribeLogDirsRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("topic", Type.COMPACT_STRING, "The topic name"),
+                new Field("topic", Types.COMPACT_STRING, "The topic name"),
                 new Field("partitions", new CompactArrayOf(Type.INT32), "The partition indexes."),
                 TaggedFieldsSection.of(
                 )

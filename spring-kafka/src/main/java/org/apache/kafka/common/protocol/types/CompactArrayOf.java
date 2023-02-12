@@ -16,7 +16,6 @@
  */
 package org.apache.kafka.common.protocol.types;
 
-import org.apache.kafka.common.protocol.types.Type.DocumentedType;
 import org.apache.kafka.common.utils.ByteUtils;
 
 import java.nio.ByteBuffer;
@@ -98,7 +97,6 @@ public class CompactArrayOf extends DocumentedType {
         return size;
     }
 
-    @Override
     public Optional<Type> arrayElementType() {
         return Optional.of(type);
     }

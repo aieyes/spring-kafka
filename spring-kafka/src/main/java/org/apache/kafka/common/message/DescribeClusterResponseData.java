@@ -19,29 +19,25 @@
 
 package org.apache.kafka.common.message;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.apache.kafka.common.errors.UnsupportedVersionException;
-import org.apache.kafka.common.protocol.ApiMessage;
-import org.apache.kafka.common.protocol.Message;
-import org.apache.kafka.common.protocol.MessageSizeAccumulator;
-import org.apache.kafka.common.protocol.MessageUtil;
-import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
-import org.apache.kafka.common.protocol.Writable;
+import org.apache.kafka.common.protocol.*;
 import org.apache.kafka.common.protocol.types.CompactArrayOf;
 import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class DescribeClusterResponseData implements ApiMessage {
@@ -58,8 +54,8 @@ public class DescribeClusterResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The top-level error code, or 0 if there was no error"),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The top-level error message, or null if there was no error."),
-            new Field("cluster_id", Type.COMPACT_STRING, "The cluster ID that responding broker belongs to."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The top-level error message, or null if there was no error."),
+            new Field("cluster_id", Types.COMPACT_STRING, "The cluster ID that responding broker belongs to."),
             new Field("controller_id", Type.INT32, "The ID of the controller broker."),
             new Field("brokers", new CompactArrayOf(DescribeClusterBroker.SCHEMA_0), "Each broker in the response."),
             new Field("cluster_authorized_operations", Type.INT32, "32-bit bitfield to represent authorized operations for this cluster."),
@@ -387,9 +383,9 @@ public class DescribeClusterResponseData implements ApiMessage {
         public static final Schema SCHEMA_0 =
             new Schema(
                 new Field("broker_id", Type.INT32, "The broker ID."),
-                new Field("host", Type.COMPACT_STRING, "The broker hostname."),
+                new Field("host", Types.COMPACT_STRING, "The broker hostname."),
                 new Field("port", Type.INT32, "The broker port."),
-                new Field("rack", Type.COMPACT_NULLABLE_STRING, "The rack of the broker, or null if it has not been assigned to a rack."),
+                new Field("rack", Types.COMPACT_NULLABLE_STRING, "The rack of the broker, or null if it has not been assigned to a rack."),
                 TaggedFieldsSection.of(
                 )
             );

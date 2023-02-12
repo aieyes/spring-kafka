@@ -39,8 +39,8 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
-
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.Types;
 
 public class DeleteAclsRequestData implements ApiMessage {
     List<DeleteAclsFilter> filters;
@@ -289,10 +289,10 @@ public class DeleteAclsRequestData implements ApiMessage {
         public static final Schema SCHEMA_2 =
             new Schema(
                 new Field("resource_type_filter", Type.INT8, "The resource type."),
-                new Field("resource_name_filter", Type.COMPACT_NULLABLE_STRING, "The resource name."),
+                new Field("resource_name_filter", Types.COMPACT_NULLABLE_STRING, "The resource name."),
                 new Field("pattern_type_filter", Type.INT8, "The pattern type."),
-                new Field("principal_filter", Type.COMPACT_NULLABLE_STRING, "The principal filter, or null to accept all principals."),
-                new Field("host_filter", Type.COMPACT_NULLABLE_STRING, "The host filter, or null to accept all hosts."),
+                new Field("principal_filter", Types.COMPACT_NULLABLE_STRING, "The principal filter, or null to accept all principals."),
+                new Field("host_filter", Types.COMPACT_NULLABLE_STRING, "The host filter, or null to accept all hosts."),
                 new Field("operation", Type.INT8, "The ACL operation."),
                 new Field("permission_type", Type.INT8, "The permission type."),
                 TaggedFieldsSection.of(

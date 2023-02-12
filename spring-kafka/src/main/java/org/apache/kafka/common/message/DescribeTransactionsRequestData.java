@@ -36,7 +36,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class DescribeTransactionsRequestData implements ApiMessage {
@@ -45,7 +45,7 @@ public class DescribeTransactionsRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_0 =
         new Schema(
-            new Field("transactional_ids", new CompactArrayOf(Type.COMPACT_STRING), "Array of transactionalIds to include in describe results. If empty, then no results will be returned."),
+            new Field("transactional_ids", new CompactArrayOf(Types.COMPACT_STRING), "Array of transactionalIds to include in describe results. If empty, then no results will be returned."),
             TaggedFieldsSection.of(
             )
         );

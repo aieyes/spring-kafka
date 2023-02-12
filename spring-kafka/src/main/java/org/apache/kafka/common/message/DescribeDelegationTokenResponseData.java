@@ -31,17 +31,9 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.Bytes;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeDelegationTokenResponseData implements ApiMessage {
@@ -321,13 +313,13 @@ public class DescribeDelegationTokenResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("principal_type", Type.COMPACT_STRING, "The token principal type."),
-                new Field("principal_name", Type.COMPACT_STRING, "The token principal name."),
+                new Field("principal_type", Types.COMPACT_STRING, "The token principal type."),
+                new Field("principal_name", Types.COMPACT_STRING, "The token principal name."),
                 new Field("issue_timestamp", Type.INT64, "The token issue timestamp in milliseconds."),
                 new Field("expiry_timestamp", Type.INT64, "The token expiry timestamp in milliseconds."),
                 new Field("max_timestamp", Type.INT64, "The token maximum timestamp length in milliseconds."),
-                new Field("token_id", Type.COMPACT_STRING, "The token ID."),
-                new Field("hmac", Type.COMPACT_BYTES, "The token HMAC."),
+                new Field("token_id", Types.COMPACT_STRING, "The token ID."),
+                new Field("hmac", Types.COMPACT_BYTES, "The token HMAC."),
                 new Field("renewers", new CompactArrayOf(DescribedDelegationTokenRenewer.SCHEMA_2), "Those who are able to renew this token before it expires."),
                 TaggedFieldsSection.of(
                 )
@@ -798,8 +790,8 @@ public class DescribeDelegationTokenResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("principal_type", Type.COMPACT_STRING, "The renewer principal type"),
-                new Field("principal_name", Type.COMPACT_STRING, "The renewer principal name"),
+                new Field("principal_type", Types.COMPACT_STRING, "The renewer principal type"),
+                new Field("principal_name", Types.COMPACT_STRING, "The renewer principal name"),
                 TaggedFieldsSection.of(
                 )
             );

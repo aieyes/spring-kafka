@@ -39,8 +39,8 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
-
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.Types;
 
 public class DeleteAclsResponseData implements ApiMessage {
     int throttleTimeMs;
@@ -299,7 +299,7 @@ public class DeleteAclsResponseData implements ApiMessage {
         public static final Schema SCHEMA_2 =
             new Schema(
                 new Field("error_code", Type.INT16, "The error code, or 0 if the filter succeeded."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if the filter succeeded."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if the filter succeeded."),
                 new Field("matching_acls", new CompactArrayOf(DeleteAclsMatchingAcl.SCHEMA_2), "The ACLs which matched this filter."),
                 TaggedFieldsSection.of(
                 )
@@ -627,12 +627,12 @@ public class DeleteAclsResponseData implements ApiMessage {
         public static final Schema SCHEMA_2 =
             new Schema(
                 new Field("error_code", Type.INT16, "The deletion error code, or 0 if the deletion succeeded."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The deletion error message, or null if the deletion succeeded."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The deletion error message, or null if the deletion succeeded."),
                 new Field("resource_type", Type.INT8, "The ACL resource type."),
-                new Field("resource_name", Type.COMPACT_STRING, "The ACL resource name."),
+                new Field("resource_name", Types.COMPACT_STRING, "The ACL resource name."),
                 new Field("pattern_type", Type.INT8, "The ACL resource pattern type."),
-                new Field("principal", Type.COMPACT_STRING, "The ACL principal."),
-                new Field("host", Type.COMPACT_STRING, "The ACL host."),
+                new Field("principal", Types.COMPACT_STRING, "The ACL principal."),
+                new Field("host", Types.COMPACT_STRING, "The ACL host."),
                 new Field("operation", Type.INT8, "The ACL operation."),
                 new Field("permission_type", Type.INT8, "The ACL permission type."),
                 TaggedFieldsSection.of(

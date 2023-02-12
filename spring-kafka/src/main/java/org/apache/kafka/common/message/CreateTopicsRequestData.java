@@ -32,17 +32,24 @@ import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
 import org.apache.kafka.common.protocol.types.ArrayOf;
+import org.apache.kafka.common.protocol.types.ArrayOf;
+import org.apache.kafka.common.protocol.types.CompactArrayOf;
 import org.apache.kafka.common.protocol.types.CompactArrayOf;
 import org.apache.kafka.common.protocol.types.Field;
+import org.apache.kafka.common.protocol.types.Field;
+import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
+import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class CreateTopicsRequestData implements ApiMessage {
@@ -355,7 +362,7 @@ public class CreateTopicsRequestData implements ApiMessage {
 
         public static final Schema SCHEMA_5 =
                 new Schema(
-                        new Field("name", Type.COMPACT_STRING, "The topic name."),
+                        new Field("name", Types.COMPACT_STRING, "The topic name."),
                         new Field("num_partitions", Type.INT32, "The number of partitions to create in the topic, or -1 if we are either specifying a manual partition assignment or using the default partitions."),
                         new Field("replication_factor", Type.INT16, "The number of replicas to create for each partition in the topic, or -1 if we are either specifying a manual partition assignment or using the default replication factor."),
                         new Field("assignments", new CompactArrayOf(CreatableReplicaAssignment.SCHEMA_5), "The manual partition assignment, or the empty array if we are using automatic assignment."),
@@ -1082,8 +1089,8 @@ public class CreateTopicsRequestData implements ApiMessage {
 
         public static final Schema SCHEMA_5 =
                 new Schema(
-                        new Field("name", Type.COMPACT_STRING, "The configuration name."),
-                        new Field("value", Type.COMPACT_NULLABLE_STRING, "The configuration value."),
+                        new Field("name", Types.COMPACT_STRING, "The configuration name."),
+                        new Field("value", Types.COMPACT_NULLABLE_STRING, "The configuration value."),
                         TaggedFieldsSection.of(
                         )
                 );

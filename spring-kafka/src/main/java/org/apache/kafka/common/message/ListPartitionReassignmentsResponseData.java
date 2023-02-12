@@ -38,7 +38,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class ListPartitionReassignmentsResponseData implements ApiMessage {
@@ -52,7 +52,7 @@ public class ListPartitionReassignmentsResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The top-level error code, or 0 if there was no error"),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The top-level error message, or null if there was no error."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The top-level error message, or null if there was no error."),
             new Field("topics", new CompactArrayOf(OngoingTopicReassignment.SCHEMA_0), "The ongoing reassignments for each topic."),
             TaggedFieldsSection.of(
             )
@@ -297,7 +297,7 @@ public class ListPartitionReassignmentsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("partitions", new CompactArrayOf(OngoingPartitionReassignment.SCHEMA_0), "The ongoing reassignments for each partition."),
                 TaggedFieldsSection.of(
                 )

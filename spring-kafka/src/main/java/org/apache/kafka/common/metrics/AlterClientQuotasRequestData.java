@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class AlterClientQuotasRequestData implements ApiMessage {
@@ -571,8 +571,8 @@ public class AlterClientQuotasRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_1 =
             new Schema(
-                new Field("entity_type", Type.COMPACT_STRING, "The entity type."),
-                new Field("entity_name", Type.COMPACT_NULLABLE_STRING, "The name of the entity, or null if the default."),
+                new Field("entity_type", Types.COMPACT_STRING, "The entity type."),
+                new Field("entity_name", Types.COMPACT_NULLABLE_STRING, "The name of the entity, or null if the default."),
                 TaggedFieldsSection.of(
                 )
             );
@@ -828,14 +828,14 @@ public class AlterClientQuotasRequestData implements ApiMessage {
         public static final Schema SCHEMA_0 =
             new Schema(
                 new Field("key", Type.STRING, "The quota configuration key."),
-                new Field("value", Type.FLOAT64, "The value to set, otherwise ignored if the value is to be removed."),
+                new Field("value", Types.FLOAT64, "The value to set, otherwise ignored if the value is to be removed."),
                 new Field("remove", Type.BOOLEAN, "Whether the quota configuration value should be removed, otherwise set.")
             );
         
         public static final Schema SCHEMA_1 =
             new Schema(
-                new Field("key", Type.COMPACT_STRING, "The quota configuration key."),
-                new Field("value", Type.FLOAT64, "The value to set, otherwise ignored if the value is to be removed."),
+                new Field("key", Types.COMPACT_STRING, "The quota configuration key."),
+                new Field("value", Types.FLOAT64, "The value to set, otherwise ignored if the value is to be removed."),
                 new Field("remove", Type.BOOLEAN, "Whether the quota configuration value should be removed, otherwise set."),
                 TaggedFieldsSection.of(
                 )

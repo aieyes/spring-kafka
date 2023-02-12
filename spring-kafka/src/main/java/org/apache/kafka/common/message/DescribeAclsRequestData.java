@@ -29,14 +29,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeAclsRequestData implements ApiMessage {
@@ -73,10 +67,10 @@ public class DescribeAclsRequestData implements ApiMessage {
     public static final Schema SCHEMA_2 =
         new Schema(
             new Field("resource_type_filter", Type.INT8, "The resource type."),
-            new Field("resource_name_filter", Type.COMPACT_NULLABLE_STRING, "The resource name, or null to match any resource name."),
+            new Field("resource_name_filter", Types.COMPACT_NULLABLE_STRING, "The resource name, or null to match any resource name."),
             new Field("pattern_type_filter", Type.INT8, "The resource pattern to match."),
-            new Field("principal_filter", Type.COMPACT_NULLABLE_STRING, "The principal to match, or null to match any principal."),
-            new Field("host_filter", Type.COMPACT_NULLABLE_STRING, "The host to match, or null to match any host."),
+            new Field("principal_filter", Types.COMPACT_NULLABLE_STRING, "The principal to match, or null to match any principal."),
+            new Field("host_filter", Types.COMPACT_NULLABLE_STRING, "The host to match, or null to match any host."),
             new Field("operation", Type.INT8, "The operation to match."),
             new Field("permission_type", Type.INT8, "The permission type to match."),
             TaggedFieldsSection.of(

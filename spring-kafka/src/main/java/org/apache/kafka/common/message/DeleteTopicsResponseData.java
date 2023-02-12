@@ -43,8 +43,8 @@ import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
-
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.Types;
 
 public class DeleteTopicsResponseData implements ApiMessage {
     int throttleTimeMs;
@@ -334,7 +334,7 @@ public class DeleteTopicsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_4 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name"),
+                new Field("name", Types.COMPACT_STRING, "The topic name"),
                 new Field("error_code", Type.INT16, "The deletion error, or 0 if the deletion succeeded."),
                 TaggedFieldsSection.of(
                 )
@@ -342,19 +342,19 @@ public class DeleteTopicsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_5 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name"),
+                new Field("name", Types.COMPACT_STRING, "The topic name"),
                 new Field("error_code", Type.INT16, "The deletion error, or 0 if the deletion succeeded."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
                 TaggedFieldsSection.of(
                 )
             );
         
         public static final Schema SCHEMA_6 =
             new Schema(
-                new Field("name", Type.COMPACT_NULLABLE_STRING, "The topic name"),
-                new Field("topic_id", Type.UUID, "the unique topic ID"),
+                new Field("name", Types.COMPACT_NULLABLE_STRING, "The topic name"),
+                new Field("topic_id", Types.UUID, "the unique topic ID"),
                 new Field("error_code", Type.INT16, "The deletion error, or 0 if the deletion succeeded."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
                 TaggedFieldsSection.of(
                 )
             );

@@ -32,18 +32,10 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class MetadataResponseData implements ApiMessage {
@@ -121,7 +113,7 @@ public class MetadataResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("brokers", new CompactArrayOf(MetadataResponseBroker.SCHEMA_9), "Each broker in the response."),
-            new Field("cluster_id", Type.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
+            new Field("cluster_id", Types.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
             new Field("controller_id", Type.INT32, "The ID of the controller broker."),
             new Field("topics", new CompactArrayOf(MetadataResponseTopic.SCHEMA_9), "Each topic in the response."),
             new Field("cluster_authorized_operations", Type.INT32, "32-bit bitfield to represent authorized operations for this cluster."),
@@ -133,7 +125,7 @@ public class MetadataResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("brokers", new CompactArrayOf(MetadataResponseBroker.SCHEMA_9), "Each broker in the response."),
-            new Field("cluster_id", Type.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
+            new Field("cluster_id", Types.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
             new Field("controller_id", Type.INT32, "The ID of the controller broker."),
             new Field("topics", new CompactArrayOf(MetadataResponseTopic.SCHEMA_10), "Each topic in the response."),
             new Field("cluster_authorized_operations", Type.INT32, "32-bit bitfield to represent authorized operations for this cluster."),
@@ -145,7 +137,7 @@ public class MetadataResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("brokers", new CompactArrayOf(MetadataResponseBroker.SCHEMA_9), "Each broker in the response."),
-            new Field("cluster_id", Type.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
+            new Field("cluster_id", Types.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
             new Field("controller_id", Type.INT32, "The ID of the controller broker."),
             new Field("topics", new CompactArrayOf(MetadataResponseTopic.SCHEMA_10), "Each topic in the response."),
             TaggedFieldsSection.of(
@@ -156,7 +148,7 @@ public class MetadataResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("brokers", new CompactArrayOf(MetadataResponseBroker.SCHEMA_9), "Each broker in the response."),
-            new Field("cluster_id", Type.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
+            new Field("cluster_id", Types.COMPACT_NULLABLE_STRING, "The cluster ID that responding broker belongs to."),
             new Field("controller_id", Type.INT32, "The ID of the controller broker."),
             new Field("topics", new CompactArrayOf(MetadataResponseTopic.SCHEMA_12), "Each topic in the response."),
             TaggedFieldsSection.of(
@@ -637,9 +629,9 @@ public class MetadataResponseData implements ApiMessage {
         public static final Schema SCHEMA_9 =
             new Schema(
                 new Field("node_id", Type.INT32, "The broker ID."),
-                new Field("host", Type.COMPACT_STRING, "The broker hostname."),
+                new Field("host", Types.COMPACT_STRING, "The broker hostname."),
                 new Field("port", Type.INT32, "The broker port."),
-                new Field("rack", Type.COMPACT_NULLABLE_STRING, "The rack of the broker, or null if it has not been assigned to a rack."),
+                new Field("rack", Types.COMPACT_NULLABLE_STRING, "The rack of the broker, or null if it has not been assigned to a rack."),
                 TaggedFieldsSection.of(
                 )
             );
@@ -1067,7 +1059,7 @@ public class MetadataResponseData implements ApiMessage {
         public static final Schema SCHEMA_9 =
             new Schema(
                 new Field("error_code", Type.INT16, "The topic error, or 0 if there was no error."),
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("is_internal", Type.BOOLEAN, "True if the topic is internal."),
                 new Field("partitions", new CompactArrayOf(MetadataResponsePartition.SCHEMA_9), "Each partition in the topic."),
                 new Field("topic_authorized_operations", Type.INT32, "32-bit bitfield to represent authorized operations for this topic."),
@@ -1078,8 +1070,8 @@ public class MetadataResponseData implements ApiMessage {
         public static final Schema SCHEMA_10 =
             new Schema(
                 new Field("error_code", Type.INT16, "The topic error, or 0 if there was no error."),
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
-                new Field("topic_id", Type.UUID, "The topic id."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
+                new Field("topic_id", Types.UUID, "The topic id."),
                 new Field("is_internal", Type.BOOLEAN, "True if the topic is internal."),
                 new Field("partitions", new CompactArrayOf(MetadataResponsePartition.SCHEMA_9), "Each partition in the topic."),
                 new Field("topic_authorized_operations", Type.INT32, "32-bit bitfield to represent authorized operations for this topic."),
@@ -1092,8 +1084,8 @@ public class MetadataResponseData implements ApiMessage {
         public static final Schema SCHEMA_12 =
             new Schema(
                 new Field("error_code", Type.INT16, "The topic error, or 0 if there was no error."),
-                new Field("name", Type.COMPACT_NULLABLE_STRING, "The topic name."),
-                new Field("topic_id", Type.UUID, "The topic id."),
+                new Field("name", Types.COMPACT_NULLABLE_STRING, "The topic name."),
+                new Field("topic_id", Types.UUID, "The topic id."),
                 new Field("is_internal", Type.BOOLEAN, "True if the topic is internal."),
                 new Field("partitions", new CompactArrayOf(MetadataResponsePartition.SCHEMA_9), "Each partition in the topic."),
                 new Field("topic_authorized_operations", Type.INT32, "32-bit bitfield to represent authorized operations for this topic."),

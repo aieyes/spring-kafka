@@ -19,26 +19,15 @@
 
 package org.apache.kafka.common.message;
 
+import org.apache.kafka.common.errors.UnsupportedVersionException;
+import org.apache.kafka.common.protocol.Readable;
+import org.apache.kafka.common.protocol.*;
+import org.apache.kafka.common.protocol.types.*;
+import org.apache.kafka.common.utils.ByteUtils;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.kafka.common.errors.UnsupportedVersionException;
-import org.apache.kafka.common.protocol.ApiMessage;
-import org.apache.kafka.common.protocol.Message;
-import org.apache.kafka.common.protocol.MessageSizeAccumulator;
-import org.apache.kafka.common.protocol.MessageUtil;
-import org.apache.kafka.common.protocol.ObjectSerializationCache;
-import org.apache.kafka.common.protocol.Readable;
-import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
-import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class AlterPartitionReassignmentsRequestData implements ApiMessage {
@@ -226,7 +215,7 @@ public class AlterPartitionReassignmentsRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("partitions", new CompactArrayOf(ReassignablePartition.SCHEMA_0), "The partitions to reassign."),
                 TaggedFieldsSection.of(
                 )

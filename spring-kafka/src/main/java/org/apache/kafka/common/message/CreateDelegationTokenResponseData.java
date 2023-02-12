@@ -34,11 +34,10 @@ import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
-import org.apache.kafka.common.utils.Bytes;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class CreateDelegationTokenResponseData implements ApiMessage {
@@ -71,13 +70,13 @@ public class CreateDelegationTokenResponseData implements ApiMessage {
     public static final Schema SCHEMA_2 =
         new Schema(
             new Field("error_code", Type.INT16, "The top-level error, or zero if there was no error."),
-            new Field("principal_type", Type.COMPACT_STRING, "The principal type of the token owner."),
-            new Field("principal_name", Type.COMPACT_STRING, "The name of the token owner."),
+            new Field("principal_type", Types.COMPACT_STRING, "The principal type of the token owner."),
+            new Field("principal_name", Types.COMPACT_STRING, "The name of the token owner."),
             new Field("issue_timestamp_ms", Type.INT64, "When this token was generated."),
             new Field("expiry_timestamp_ms", Type.INT64, "When this token expires."),
             new Field("max_timestamp_ms", Type.INT64, "The maximum lifetime of this token."),
-            new Field("token_id", Type.COMPACT_STRING, "The token UUID."),
-            new Field("hmac", Type.COMPACT_BYTES, "HMAC of the delegation token."),
+            new Field("token_id", Types.COMPACT_STRING, "The token UUID."),
+            new Field("hmac", Types.COMPACT_BYTES, "HMAC of the delegation token."),
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             TaggedFieldsSection.of(
             )

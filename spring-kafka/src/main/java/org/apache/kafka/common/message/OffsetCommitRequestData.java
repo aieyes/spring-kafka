@@ -30,16 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class OffsetCommitRequestData implements ApiMessage {
@@ -105,10 +97,10 @@ public class OffsetCommitRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_8 =
         new Schema(
-            new Field("group_id", Type.COMPACT_STRING, "The unique group identifier."),
+            new Field("group_id", Types.COMPACT_STRING, "The unique group identifier."),
             new Field("generation_id", Type.INT32, "The generation of the group."),
-            new Field("member_id", Type.COMPACT_STRING, "The member ID assigned by the group coordinator."),
-            new Field("group_instance_id", Type.COMPACT_NULLABLE_STRING, "The unique identifier of the consumer instance provided by end user."),
+            new Field("member_id", Types.COMPACT_STRING, "The member ID assigned by the group coordinator."),
+            new Field("group_instance_id", Types.COMPACT_NULLABLE_STRING, "The unique identifier of the consumer instance provided by end user."),
             new Field("topics", new CompactArrayOf(OffsetCommitRequestTopic.SCHEMA_8), "The topics to commit offsets for."),
             TaggedFieldsSection.of(
             )
@@ -595,7 +587,7 @@ public class OffsetCommitRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_8 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("partitions", new CompactArrayOf(OffsetCommitRequestPartition.SCHEMA_8), "Each partition to commit offsets for."),
                 TaggedFieldsSection.of(
                 )
@@ -907,7 +899,7 @@ public class OffsetCommitRequestData implements ApiMessage {
                 new Field("partition_index", Type.INT32, "The partition index."),
                 new Field("committed_offset", Type.INT64, "The message offset to be committed."),
                 new Field("committed_leader_epoch", Type.INT32, "The leader epoch of this partition."),
-                new Field("committed_metadata", Type.COMPACT_NULLABLE_STRING, "Any associated metadata the client wants to keep."),
+                new Field("committed_metadata", Types.COMPACT_NULLABLE_STRING, "Any associated metadata the client wants to keep."),
                 TaggedFieldsSection.of(
                 )
             );

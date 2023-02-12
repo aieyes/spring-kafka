@@ -30,15 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class FindCoordinatorResponseData implements ApiMessage {
@@ -75,9 +68,9 @@ public class FindCoordinatorResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The error code, or 0 if there was no error."),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
-            new Field("node_id", Type.INT32, "The node id."),
-            new Field("host", Type.COMPACT_STRING, "The host name."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
+            new Field("node_id", Types.INT32, "The node id."),
+            new Field("host", Types.COMPACT_STRING, "The host name."),
             new Field("port", Type.INT32, "The port."),
             TaggedFieldsSection.of(
             )
@@ -530,12 +523,12 @@ public class FindCoordinatorResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_4 =
             new Schema(
-                new Field("key", Type.COMPACT_STRING, "The coordinator key."),
+                new Field("key", Types.COMPACT_STRING, "The coordinator key."),
                 new Field("node_id", Type.INT32, "The node id."),
-                new Field("host", Type.COMPACT_STRING, "The host name."),
+                new Field("host", Types.COMPACT_STRING, "The host name."),
                 new Field("port", Type.INT32, "The port."),
                 new Field("error_code", Type.INT16, "The error code, or 0 if there was no error."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
                 TaggedFieldsSection.of(
                 )
             );

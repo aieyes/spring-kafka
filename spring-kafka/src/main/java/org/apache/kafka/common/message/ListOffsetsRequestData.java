@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class ListOffsetsRequestData implements ApiMessage {
@@ -363,7 +363,7 @@ public class ListOffsetsRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_6 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("partitions", new CompactArrayOf(ListOffsetsPartition.SCHEMA_6), "Each partition in the request."),
                 TaggedFieldsSection.of(
                 )

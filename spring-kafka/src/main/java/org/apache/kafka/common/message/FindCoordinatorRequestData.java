@@ -29,15 +29,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class FindCoordinatorRequestData implements ApiMessage {
@@ -61,7 +54,7 @@ public class FindCoordinatorRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_3 =
         new Schema(
-            new Field("key", Type.COMPACT_STRING, "The coordinator key."),
+            new Field("key", Types.COMPACT_STRING, "The coordinator key."),
             new Field("key_type", Type.INT8, "The coordinator key type. (Group, transaction, etc.)"),
             TaggedFieldsSection.of(
             )
@@ -70,7 +63,7 @@ public class FindCoordinatorRequestData implements ApiMessage {
     public static final Schema SCHEMA_4 =
         new Schema(
             new Field("key_type", Type.INT8, "The coordinator key type. (Group, transaction, etc.)"),
-            new Field("coordinator_keys", new CompactArrayOf(Type.COMPACT_STRING), "The coordinator keys."),
+            new Field("coordinator_keys", new CompactArrayOf(Types.COMPACT_STRING), "The coordinator keys."),
             TaggedFieldsSection.of(
             )
         );

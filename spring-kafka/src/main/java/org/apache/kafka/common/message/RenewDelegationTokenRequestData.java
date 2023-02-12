@@ -29,15 +29,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-import org.apache.kafka.common.utils.Bytes;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class RenewDelegationTokenRequestData implements ApiMessage {
@@ -55,7 +48,7 @@ public class RenewDelegationTokenRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_2 =
         new Schema(
-            new Field("hmac", Type.COMPACT_BYTES, "The HMAC of the delegation token to be renewed."),
+            new Field("hmac", Types.COMPACT_BYTES, "The HMAC of the delegation token to be renewed."),
             new Field("renew_period_ms", Type.INT64, "The renewal time period in milliseconds."),
             TaggedFieldsSection.of(
             )

@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class IncrementalAlterConfigsResponseData implements ApiMessage {
@@ -287,9 +287,9 @@ public class IncrementalAlterConfigsResponseData implements ApiMessage {
         public static final Schema SCHEMA_1 =
             new Schema(
                 new Field("error_code", Type.INT16, "The resource error code."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The resource error message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The resource error message, or null if there was no error."),
                 new Field("resource_type", Type.INT8, "The resource type."),
-                new Field("resource_name", Type.COMPACT_STRING, "The resource name."),
+                new Field("resource_name", Types.COMPACT_STRING, "The resource name."),
                 TaggedFieldsSection.of(
                 )
             );

@@ -36,10 +36,10 @@ import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeClientQuotasResponseData implements ApiMessage {
@@ -61,7 +61,7 @@ public class DescribeClientQuotasResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The error code, or `0` if the quota description succeeded."),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or `null` if the quota description succeeded."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or `null` if the quota description succeeded."),
             new Field("entries", CompactArrayOf.nullable(EntryData.SCHEMA_1), "A result entry."),
             TaggedFieldsSection.of(
             )
@@ -682,8 +682,8 @@ public class DescribeClientQuotasResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_1 =
             new Schema(
-                new Field("entity_type", Type.COMPACT_STRING, "The entity type."),
-                new Field("entity_name", Type.COMPACT_NULLABLE_STRING, "The entity name, or null if the default."),
+                new Field("entity_type", Types.COMPACT_STRING, "The entity type."),
+                new Field("entity_name", Types.COMPACT_NULLABLE_STRING, "The entity name, or null if the default."),
                 TaggedFieldsSection.of(
                 )
             );
@@ -938,13 +938,13 @@ public class DescribeClientQuotasResponseData implements ApiMessage {
         public static final Schema SCHEMA_0 =
             new Schema(
                 new Field("key", Type.STRING, "The quota configuration key."),
-                new Field("value", Type.FLOAT64, "The quota configuration value.")
+                new Field("value", Types.FLOAT64, "The quota configuration value.")
             );
         
         public static final Schema SCHEMA_1 =
             new Schema(
-                new Field("key", Type.COMPACT_STRING, "The quota configuration key."),
-                new Field("value", Type.FLOAT64, "The quota configuration value."),
+                new Field("key", Types.COMPACT_STRING, "The quota configuration key."),
+                new Field("value", Types.FLOAT64, "The quota configuration value."),
                 TaggedFieldsSection.of(
                 )
             );

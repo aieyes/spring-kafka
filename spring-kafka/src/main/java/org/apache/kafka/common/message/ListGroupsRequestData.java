@@ -29,15 +29,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class ListGroupsRequestData implements ApiMessage {
@@ -60,7 +53,7 @@ public class ListGroupsRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_4 =
         new Schema(
-            new Field("states_filter", new CompactArrayOf(Type.COMPACT_STRING), "The states of the groups we want to list. If empty all groups are returned with their state."),
+            new Field("states_filter", new CompactArrayOf(Types.COMPACT_STRING), "The states of the groups we want to list. If empty all groups are returned with their state."),
             TaggedFieldsSection.of(
             )
         );

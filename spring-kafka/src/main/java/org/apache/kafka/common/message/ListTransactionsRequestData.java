@@ -28,15 +28,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class ListTransactionsRequestData implements ApiMessage {
@@ -46,7 +39,7 @@ public class ListTransactionsRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_0 =
         new Schema(
-            new Field("state_filters", new CompactArrayOf(Type.COMPACT_STRING), "The transaction states to filter by: if empty, all transactions are returned; if non-empty, then only transactions matching one of the filtered states will be returned"),
+            new Field("state_filters", new CompactArrayOf(Types.COMPACT_STRING), "The transaction states to filter by: if empty, all transactions are returned; if non-empty, then only transactions matching one of the filtered states will be returned"),
             new Field("producer_id_filters", new CompactArrayOf(Type.INT64), "The producerIds to filter by: if empty, all transactions will be returned; if non-empty, only transactions which match one of the filtered producerIds will be returned"),
             TaggedFieldsSection.of(
             )

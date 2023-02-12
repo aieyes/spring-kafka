@@ -31,17 +31,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-import org.apache.kafka.common.utils.Bytes;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeGroupsResponseData implements ApiMessage {
@@ -351,10 +342,10 @@ public class DescribeGroupsResponseData implements ApiMessage {
         public static final Schema SCHEMA_5 =
             new Schema(
                 new Field("error_code", Type.INT16, "The describe error, or 0 if there was no error."),
-                new Field("group_id", Type.COMPACT_STRING, "The group ID string."),
-                new Field("group_state", Type.COMPACT_STRING, "The group state string, or the empty string."),
-                new Field("protocol_type", Type.COMPACT_STRING, "The group protocol type, or the empty string."),
-                new Field("protocol_data", Type.COMPACT_STRING, "The group protocol data, or the empty string."),
+                new Field("group_id", Types.COMPACT_STRING, "The group ID string."),
+                new Field("group_state", Types.COMPACT_STRING, "The group state string, or the empty string."),
+                new Field("protocol_type", Types.COMPACT_STRING, "The group protocol type, or the empty string."),
+                new Field("protocol_data", Types.COMPACT_STRING, "The group protocol data, or the empty string."),
                 new Field("members", new CompactArrayOf(DescribedGroupMember.SCHEMA_5), "The group members."),
                 new Field("authorized_operations", Type.INT32, "32-bit bitfield to represent authorized operations for this group."),
                 TaggedFieldsSection.of(
@@ -857,12 +848,12 @@ public class DescribeGroupsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_5 =
             new Schema(
-                new Field("member_id", Type.COMPACT_STRING, "The member ID assigned by the group coordinator."),
-                new Field("group_instance_id", Type.COMPACT_NULLABLE_STRING, "The unique identifier of the consumer instance provided by end user."),
-                new Field("client_id", Type.COMPACT_STRING, "The client ID used in the member's latest join group request."),
-                new Field("client_host", Type.COMPACT_STRING, "The client host."),
-                new Field("member_metadata", Type.COMPACT_BYTES, "The metadata corresponding to the current group protocol in use."),
-                new Field("member_assignment", Type.COMPACT_BYTES, "The current assignment provided by the group leader."),
+                new Field("member_id", Types.COMPACT_STRING, "The member ID assigned by the group coordinator."),
+                new Field("group_instance_id", Types.COMPACT_NULLABLE_STRING, "The unique identifier of the consumer instance provided by end user."),
+                new Field("client_id", Types.COMPACT_STRING, "The client ID used in the member's latest join group request."),
+                new Field("client_host", Types.COMPACT_STRING, "The client host."),
+                new Field("member_metadata", Types.COMPACT_BYTES, "The metadata corresponding to the current group protocol in use."),
+                new Field("member_assignment", Types.COMPACT_BYTES, "The current assignment provided by the group leader."),
                 TaggedFieldsSection.of(
                 )
             );

@@ -19,27 +19,15 @@
 
 package org.apache.kafka.common.message;
 
+import org.apache.kafka.common.errors.UnsupportedVersionException;
+import org.apache.kafka.common.protocol.Readable;
+import org.apache.kafka.common.protocol.*;
+import org.apache.kafka.common.protocol.types.*;
+import org.apache.kafka.common.utils.ByteUtils;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.kafka.common.errors.UnsupportedVersionException;
-import org.apache.kafka.common.protocol.ApiMessage;
-import org.apache.kafka.common.protocol.Message;
-import org.apache.kafka.common.protocol.MessageSizeAccumulator;
-import org.apache.kafka.common.protocol.MessageUtil;
-import org.apache.kafka.common.protocol.ObjectSerializationCache;
-import org.apache.kafka.common.protocol.Readable;
-import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
-import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class CreateAclsResponseData implements ApiMessage {
@@ -288,7 +276,7 @@ public class CreateAclsResponseData implements ApiMessage {
         public static final Schema SCHEMA_2 =
             new Schema(
                 new Field("error_code", Type.INT16, "The result error, or zero if there was no error."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The result message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The result message, or null if there was no error."),
                 TaggedFieldsSection.of(
                 )
             );

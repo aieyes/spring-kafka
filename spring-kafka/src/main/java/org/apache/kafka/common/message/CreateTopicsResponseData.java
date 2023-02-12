@@ -43,7 +43,8 @@ import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.Types;
 
 
 public class CreateTopicsResponseData implements ApiMessage {
@@ -345,9 +346,9 @@ public class CreateTopicsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_5 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("error_code", Type.INT16, "The error code, or 0 if there was no error."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
                 new Field("num_partitions", Type.INT32, "Number of partitions of the topic."),
                 new Field("replication_factor", Type.INT16, "Replication factor of the topic."),
                 new Field("configs", CompactArrayOf.nullable(CreatableTopicConfigs.SCHEMA_5), "Configuration of the topic."),
@@ -360,10 +361,10 @@ public class CreateTopicsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_7 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
-                new Field("topic_id", Type.UUID, "The unique topic ID"),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
+                new Field("topic_id", Types.UUID, "The unique topic ID"),
                 new Field("error_code", Type.INT16, "The error code, or 0 if there was no error."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
                 new Field("num_partitions", Type.INT32, "Number of partitions of the topic."),
                 new Field("replication_factor", Type.INT16, "Replication factor of the topic."),
                 new Field("configs", CompactArrayOf.nullable(CreatableTopicConfigs.SCHEMA_5), "Configuration of the topic."),
@@ -859,8 +860,8 @@ public class CreateTopicsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_5 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The configuration name."),
-                new Field("value", Type.COMPACT_NULLABLE_STRING, "The configuration value."),
+                new Field("name", Types.COMPACT_STRING, "The configuration name."),
+                new Field("value", Types.COMPACT_NULLABLE_STRING, "The configuration value."),
                 new Field("read_only", Type.BOOLEAN, "True if the configuration is read-only."),
                 new Field("config_source", Type.INT8, "The configuration source."),
                 new Field("is_sensitive", Type.BOOLEAN, "True if this configuration is sensitive."),

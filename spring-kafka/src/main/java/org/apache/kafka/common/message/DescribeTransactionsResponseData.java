@@ -31,17 +31,10 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeTransactionsResponseData implements ApiMessage {
@@ -236,8 +229,8 @@ public class DescribeTransactionsResponseData implements ApiMessage {
         public static final Schema SCHEMA_0 =
             new Schema(
                 new Field("error_code", Type.INT16, ""),
-                new Field("transactional_id", Type.COMPACT_STRING, ""),
-                new Field("transaction_state", Type.COMPACT_STRING, ""),
+                new Field("transactional_id", Types.COMPACT_STRING, ""),
+                new Field("transaction_state", Types.COMPACT_STRING, ""),
                 new Field("transaction_timeout_ms", Type.INT32, ""),
                 new Field("transaction_start_time_ms", Type.INT64, ""),
                 new Field("producer_id", Type.INT64, ""),
@@ -576,7 +569,7 @@ public class DescribeTransactionsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("topic", Type.COMPACT_STRING, ""),
+                new Field("topic", Types.COMPACT_STRING, ""),
                 new Field("partitions", new CompactArrayOf(Type.INT32), ""),
                 TaggedFieldsSection.of(
                 )

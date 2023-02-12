@@ -37,12 +37,12 @@ import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class IncrementalAlterConfigsRequestData implements ApiMessage {
@@ -290,7 +290,7 @@ public class IncrementalAlterConfigsRequestData implements ApiMessage {
         public static final Schema SCHEMA_1 =
             new Schema(
                 new Field("resource_type", Type.INT8, "The resource type."),
-                new Field("resource_name", Type.COMPACT_STRING, "The resource name."),
+                new Field("resource_name", Types.COMPACT_STRING, "The resource name."),
                 new Field("configs", new CompactArrayOf(AlterableConfig.SCHEMA_1), "The configurations."),
                 TaggedFieldsSection.of(
                 )
@@ -613,9 +613,9 @@ public class IncrementalAlterConfigsRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_1 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The configuration key name."),
+                new Field("name", Types.COMPACT_STRING, "The configuration key name."),
                 new Field("config_operation", Type.INT8, "The type (Set, Delete, Append, Subtract) of operation."),
-                new Field("value", Type.COMPACT_NULLABLE_STRING, "The value to set for the configuration key."),
+                new Field("value", Types.COMPACT_NULLABLE_STRING, "The value to set for the configuration key."),
                 TaggedFieldsSection.of(
                 )
             );

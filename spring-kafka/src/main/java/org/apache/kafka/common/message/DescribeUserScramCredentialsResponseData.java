@@ -35,10 +35,10 @@ import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeUserScramCredentialsResponseData implements ApiMessage {
@@ -52,7 +52,7 @@ public class DescribeUserScramCredentialsResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The message-level error code, 0 except for user authorization or infrastructure issues."),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The message-level error message, if any."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The message-level error message, if any."),
             new Field("results", new CompactArrayOf(DescribeUserScramCredentialsResult.SCHEMA_0), "The results for descriptions, one per user."),
             TaggedFieldsSection.of(
             )
@@ -299,9 +299,9 @@ public class DescribeUserScramCredentialsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("user", Type.COMPACT_STRING, "The user name."),
+                new Field("user", Types.COMPACT_STRING, "The user name."),
                 new Field("error_code", Type.INT16, "The user-level error code."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The user-level error message, if any."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The user-level error message, if any."),
                 new Field("credential_infos", new CompactArrayOf(CredentialInfo.SCHEMA_0), "The mechanism and related information associated with the user's SCRAM credentials."),
                 TaggedFieldsSection.of(
                 )

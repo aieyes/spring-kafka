@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class DescribeConfigsResponseData implements ApiMessage {
@@ -326,9 +326,9 @@ public class DescribeConfigsResponseData implements ApiMessage {
         public static final Schema SCHEMA_4 =
             new Schema(
                 new Field("error_code", Type.INT16, "The error code, or 0 if we were able to successfully describe the configurations."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if we were able to successfully describe the configurations."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if we were able to successfully describe the configurations."),
                 new Field("resource_type", Type.INT8, "The resource type."),
-                new Field("resource_name", Type.COMPACT_STRING, "The resource name."),
+                new Field("resource_name", Types.COMPACT_STRING, "The resource name."),
                 new Field("configs", new CompactArrayOf(DescribeConfigsResourceResult.SCHEMA_4), "Each listed configuration."),
                 TaggedFieldsSection.of(
                 )
@@ -736,14 +736,14 @@ public class DescribeConfigsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_4 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The configuration name."),
-                new Field("value", Type.COMPACT_NULLABLE_STRING, "The configuration value."),
+                new Field("name", Types.COMPACT_STRING, "The configuration name."),
+                new Field("value", Types.COMPACT_NULLABLE_STRING, "The configuration value."),
                 new Field("read_only", Type.BOOLEAN, "True if the configuration is read-only."),
                 new Field("config_source", Type.INT8, "The configuration source."),
                 new Field("is_sensitive", Type.BOOLEAN, "True if this configuration is sensitive."),
                 new Field("synonyms", new CompactArrayOf(DescribeConfigsSynonym.SCHEMA_4), "The synonyms for this configuration key."),
                 new Field("config_type", Type.INT8, "The configuration data type. Type can be one of the following values - BOOLEAN, STRING, INT, SHORT, LONG, DOUBLE, LIST, CLASS, PASSWORD"),
-                new Field("documentation", Type.COMPACT_NULLABLE_STRING, "The configuration documentation."),
+                new Field("documentation", Types.COMPACT_NULLABLE_STRING, "The configuration documentation."),
                 TaggedFieldsSection.of(
                 )
             );
@@ -1283,8 +1283,8 @@ public class DescribeConfigsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_4 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The synonym name."),
-                new Field("value", Type.COMPACT_NULLABLE_STRING, "The synonym value."),
+                new Field("name", Types.COMPACT_STRING, "The synonym name."),
+                new Field("value", Types.COMPACT_NULLABLE_STRING, "The synonym value."),
                 new Field("source", Type.INT8, "The synonym source."),
                 TaggedFieldsSection.of(
                 )

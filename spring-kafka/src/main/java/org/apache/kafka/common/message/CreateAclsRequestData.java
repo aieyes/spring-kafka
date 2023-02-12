@@ -19,27 +19,15 @@
 
 package org.apache.kafka.common.message;
 
+import org.apache.kafka.common.errors.UnsupportedVersionException;
+import org.apache.kafka.common.protocol.Readable;
+import org.apache.kafka.common.protocol.*;
+import org.apache.kafka.common.protocol.types.*;
+import org.apache.kafka.common.utils.ByteUtils;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.kafka.common.errors.UnsupportedVersionException;
-import org.apache.kafka.common.protocol.ApiMessage;
-import org.apache.kafka.common.protocol.Message;
-import org.apache.kafka.common.protocol.MessageSizeAccumulator;
-import org.apache.kafka.common.protocol.MessageUtil;
-import org.apache.kafka.common.protocol.ObjectSerializationCache;
-import org.apache.kafka.common.protocol.Readable;
-import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
-import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class CreateAclsRequestData implements ApiMessage {
@@ -289,10 +277,10 @@ public class CreateAclsRequestData implements ApiMessage {
         public static final Schema SCHEMA_2 =
             new Schema(
                 new Field("resource_type", Type.INT8, "The type of the resource."),
-                new Field("resource_name", Type.COMPACT_STRING, "The resource name for the ACL."),
+                new Field("resource_name", Types.COMPACT_STRING, "The resource name for the ACL."),
                 new Field("resource_pattern_type", Type.INT8, "The pattern type for the ACL."),
-                new Field("principal", Type.COMPACT_STRING, "The principal for the ACL."),
-                new Field("host", Type.COMPACT_STRING, "The host for the ACL."),
+                new Field("principal", Types.COMPACT_STRING, "The principal for the ACL."),
+                new Field("host", Types.COMPACT_STRING, "The host for the ACL."),
                 new Field("operation", Type.INT8, "The operation type for the ACL (read, write, etc.)."),
                 new Field("permission_type", Type.INT8, "The permission type for the ACL (allow, deny, etc.)."),
                 TaggedFieldsSection.of(

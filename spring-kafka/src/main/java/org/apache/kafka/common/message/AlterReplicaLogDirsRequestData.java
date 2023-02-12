@@ -19,30 +19,18 @@
 
 package org.apache.kafka.common.message;
 
-import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
 import org.apache.kafka.common.errors.UnsupportedVersionException;
-import org.apache.kafka.common.protocol.ApiMessage;
-import org.apache.kafka.common.protocol.Message;
-import org.apache.kafka.common.protocol.MessageSizeAccumulator;
-import org.apache.kafka.common.protocol.MessageUtil;
-import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
-import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.*;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 
 public class AlterReplicaLogDirsRequestData implements ApiMessage {
@@ -272,7 +260,7 @@ public class AlterReplicaLogDirsRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("path", Type.COMPACT_STRING, "The absolute directory path."),
+                new Field("path", Types.COMPACT_STRING, "The absolute directory path."),
                 new Field("topics", new CompactArrayOf(AlterReplicaLogDirTopic.SCHEMA_2), "The topics to add to the directory."),
                 TaggedFieldsSection.of(
                 )
@@ -578,7 +566,7 @@ public class AlterReplicaLogDirsRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("partitions", new CompactArrayOf(Type.INT32), "The partition indexes."),
                 TaggedFieldsSection.of(
                 )

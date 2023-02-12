@@ -41,7 +41,7 @@ import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class UpdateFeaturesResponseData implements ApiMessage {
@@ -55,7 +55,7 @@ public class UpdateFeaturesResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The top-level error code, or `0` if there was no top-level error."),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The top-level error message, or `null` if there was no top-level error."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The top-level error message, or `null` if there was no top-level error."),
             new Field("results", new CompactArrayOf(UpdatableFeatureResult.SCHEMA_0), "Results for each feature update."),
             TaggedFieldsSection.of(
             )
@@ -303,9 +303,9 @@ public class UpdateFeaturesResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("feature", Type.COMPACT_STRING, "The name of the finalized feature."),
+                new Field("feature", Types.COMPACT_STRING, "The name of the finalized feature."),
                 new Field("error_code", Type.INT16, "The feature update error code or `0` if the feature update succeeded."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The feature update error, or `null` if the feature update succeeded."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The feature update error, or `null` if the feature update succeeded."),
                 TaggedFieldsSection.of(
                 )
             );

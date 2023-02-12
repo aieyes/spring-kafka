@@ -1,19 +1,3 @@
-/*
- * Licensed to the Apache Software Foundation (ASF) under one or more
- * contributor license agreements. See the NOTICE file distributed with
- * this work for additional information regarding copyright ownership.
- * The ASF licenses this file to You under the Apache License, Version 2.0
- * (the "License"); you may not use this file except in compliance with
- * the License. You may obtain a copy of the License at
- *
- *    http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
 package org.apache.kafka.common.protocol.types;
 
 import org.apache.kafka.common.Uuid;
@@ -23,84 +7,13 @@ import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.Utils;
 
 import java.nio.ByteBuffer;
-import java.util.Optional;
 
 /**
- * A serializable type
+ * @Author: Eric
+ * @Email: eyes.left@qq.com
+ * @Date: 2023/2/12 15:13
  */
-public abstract class Type {
-
-    /**
-     * Write the typed object to the buffer
-     *
-     * @throws SchemaException If the object is not valid for its type
-     */
-    public abstract void write(ByteBuffer buffer, Object o);
-
-    /**
-     * Read the typed object from the buffer
-     *
-     * @throws SchemaException If the object is not valid for its type
-     */
-    public abstract Object read(ByteBuffer buffer);
-
-    /**
-     * Validate the object. If succeeded return its typed object.
-     *
-     * @throws SchemaException If validation failed
-     */
-    public abstract Object validate(Object o);
-
-    /**
-     * Return the size of the object in bytes
-     */
-    public abstract int sizeOf(Object o);
-
-    /**
-     * Check if the type supports null values
-     * @return whether or not null is a valid value for the type implementation
-     */
-    public boolean isNullable() {
-        return false;
-    }
-
-    /**
-     * If the type is an array, return the type of the array elements.  Otherwise, return empty.
-     */
-    public Optional<Type> arrayElementType() {
-        return Optional.empty();
-    }
-
-    /**
-     * Returns true if the type is an array.
-     */
-    public final boolean isArray() {
-        return arrayElementType().isPresent();
-    }
-
-    /**
-     * A Type that can return its description for documentation purposes.
-     */
-    public static abstract class DocumentedType extends Type {
-
-        /**
-         * Short name of the type to identify it in documentation;
-         * @return the name of the type
-         */
-        public abstract String typeName();
-
-        /**
-         * Documentation of the Type.
-         *
-         * @return details about valid values, representation
-         */
-        public abstract String documentation();
-
-        @Override
-        public String toString() {
-            return typeName();
-        }
-    }
+public class Types {
     /**
      * The Boolean type represents a boolean value in a byte by using
      * the value of 0 to represent false, and 1 to represent true.
@@ -961,8 +874,8 @@ public abstract class Type {
         @Override
         public String documentation() {
             return "Represents a sequence of Kafka records as " + COMPACT_NULLABLE_BYTES + ". " +
-                "For a detailed description of records see " +
-                "<a href=\"/documentation/#messageformat\">Message Sets</a>.";
+                    "For a detailed description of records see " +
+                    "<a href=\"/documentation/#messageformat\">Message Sets</a>.";
         }
     };
 
@@ -1097,35 +1010,4 @@ public abstract class Type {
         }
     };
 
-    private static String toHtml() {
-        Type[] types = {
-            BOOLEAN, INT8, INT16, INT32, INT64,
-            UNSIGNED_INT32, VARINT, VARLONG, UUID, FLOAT64,
-            STRING, COMPACT_STRING, NULLABLE_STRING, COMPACT_NULLABLE_STRING,
-            BYTES, COMPACT_BYTES, NULLABLE_BYTES, COMPACT_NULLABLE_BYTES,
-            RECORDS, new ArrayOf(STRING), new CompactArrayOf(COMPACT_STRING)};
-        final StringBuilder b = new StringBuilder();
-        b.append("<table class=\"data-table\"><tbody>\n");
-        b.append("<tr>");
-        b.append("<th>Type</th>\n");
-        b.append("<th>Description</th>\n");
-        b.append("</tr>\n");
-        for (Type type : types) {
-            DocumentedType t = (DocumentedType) type;
-            b.append("<tr>");
-            b.append("<td>");
-            b.append(t.typeName());
-            b.append("</td>");
-            b.append("<td>");
-            b.append(t.documentation());
-            b.append("</td>");
-            b.append("</tr>\n");
-        }
-        b.append("</table>\n");
-        return b.toString();
-    }
-
-    public static void main(String[] args) {
-        System.out.println(toHtml());
-    }
 }

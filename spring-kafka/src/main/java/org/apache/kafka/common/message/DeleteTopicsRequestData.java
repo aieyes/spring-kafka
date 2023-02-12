@@ -40,8 +40,8 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
-
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.Types;
 
 public class DeleteTopicsRequestData implements ApiMessage {
     List<DeleteTopicState> topics;
@@ -63,7 +63,7 @@ public class DeleteTopicsRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_4 =
         new Schema(
-            new Field("topic_names", new CompactArrayOf(Type.COMPACT_STRING), "The names of the topics to delete"),
+            new Field("topic_names", new CompactArrayOf(Types.COMPACT_STRING), "The names of the topics to delete"),
             new Field("timeout_ms", Type.INT32, "The length of time in milliseconds to wait for the deletions to complete."),
             TaggedFieldsSection.of(
             )
@@ -396,8 +396,8 @@ public class DeleteTopicsRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_6 =
             new Schema(
-                new Field("name", Type.COMPACT_NULLABLE_STRING, "The topic name"),
-                new Field("topic_id", Type.UUID, "The unique topic ID"),
+                new Field("name", Types.COMPACT_NULLABLE_STRING, "The topic name"),
+                new Field("topic_id", Types.UUID, "The unique topic ID"),
                 TaggedFieldsSection.of(
                 )
             );

@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class AlterClientQuotasResponseData implements ApiMessage {
@@ -285,7 +285,7 @@ public class AlterClientQuotasResponseData implements ApiMessage {
         public static final Schema SCHEMA_1 =
             new Schema(
                 new Field("error_code", Type.INT16, "The error code, or `0` if the quota alteration succeeded."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or `null` if the quota alteration succeeded."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or `null` if the quota alteration succeeded."),
                 new Field("entity", new CompactArrayOf(EntityData.SCHEMA_1), "The quota entity to alter."),
                 TaggedFieldsSection.of(
                 )
@@ -585,8 +585,8 @@ public class AlterClientQuotasResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_1 =
             new Schema(
-                new Field("entity_type", Type.COMPACT_STRING, "The entity type."),
-                new Field("entity_name", Type.COMPACT_NULLABLE_STRING, "The name of the entity, or null if the default."),
+                new Field("entity_type", Types.COMPACT_STRING, "The entity type."),
+                new Field("entity_name", Types.COMPACT_NULLABLE_STRING, "The name of the entity, or null if the default."),
                 TaggedFieldsSection.of(
                 )
             );

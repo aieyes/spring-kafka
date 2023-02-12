@@ -31,17 +31,10 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class UpdateFeaturesRequestData implements ApiMessage {
@@ -232,7 +225,7 @@ public class UpdateFeaturesRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("feature", Type.COMPACT_STRING, "The name of the finalized feature to be updated."),
+                new Field("feature", Types.COMPACT_STRING, "The name of the finalized feature to be updated."),
                 new Field("max_version_level", Type.INT16, "The new maximum version level for the finalized feature. A value >= 1 is valid. A value < 1, is special, and can be used to request the deletion of the finalized feature."),
                 new Field("allow_downgrade", Type.BOOLEAN, "When set to true, the finalized feature version level is allowed to be downgraded/deleted. The downgrade request will fail if the new maximum version level is a value that's not lower than the existing maximum finalized version level."),
                 TaggedFieldsSection.of(

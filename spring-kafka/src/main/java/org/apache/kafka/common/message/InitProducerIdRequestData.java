@@ -29,14 +29,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class InitProducerIdRequestData implements ApiMessage {
@@ -56,7 +50,7 @@ public class InitProducerIdRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_2 =
         new Schema(
-            new Field("transactional_id", Type.COMPACT_NULLABLE_STRING, "The transactional id, or null if the producer is not transactional."),
+            new Field("transactional_id", Types.COMPACT_NULLABLE_STRING, "The transactional id, or null if the producer is not transactional."),
             new Field("transaction_timeout_ms", Type.INT32, "The time in ms to wait before aborting idle transactions sent by this producer. This is only relevant if a TransactionalId has been defined."),
             TaggedFieldsSection.of(
             )
@@ -64,7 +58,7 @@ public class InitProducerIdRequestData implements ApiMessage {
     
     public static final Schema SCHEMA_3 =
         new Schema(
-            new Field("transactional_id", Type.COMPACT_NULLABLE_STRING, "The transactional id, or null if the producer is not transactional."),
+            new Field("transactional_id", Types.COMPACT_NULLABLE_STRING, "The transactional id, or null if the producer is not transactional."),
             new Field("transaction_timeout_ms", Type.INT32, "The time in ms to wait before aborting idle transactions sent by this producer. This is only relevant if a TransactionalId has been defined."),
             new Field("producer_id", Type.INT64, "The producer id. This is used to disambiguate requests if a transactional id is reused following its expiration."),
             new Field("producer_epoch", Type.INT16, "The producer's current epoch. This will be checked against the producer epoch on the broker, and the request will return an error if they do not match."),

@@ -19,26 +19,15 @@
 
 package org.apache.kafka.common.message;
 
+import org.apache.kafka.common.errors.UnsupportedVersionException;
+import org.apache.kafka.common.protocol.Readable;
+import org.apache.kafka.common.protocol.*;
+import org.apache.kafka.common.protocol.types.*;
+import org.apache.kafka.common.utils.ByteUtils;
+
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
-import org.apache.kafka.common.errors.UnsupportedVersionException;
-import org.apache.kafka.common.protocol.ApiMessage;
-import org.apache.kafka.common.protocol.Message;
-import org.apache.kafka.common.protocol.MessageSizeAccumulator;
-import org.apache.kafka.common.protocol.MessageUtil;
-import org.apache.kafka.common.protocol.ObjectSerializationCache;
-import org.apache.kafka.common.protocol.Readable;
-import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
-import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class AlterPartitionReassignmentsResponseData implements ApiMessage {
@@ -52,7 +41,7 @@ public class AlterPartitionReassignmentsResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The top-level error code, or 0 if there was no error."),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The top-level error message, or null if there was no error."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The top-level error message, or null if there was no error."),
             new Field("responses", new CompactArrayOf(ReassignableTopicResponse.SCHEMA_0), "The responses to topics to reassign."),
             TaggedFieldsSection.of(
             )
@@ -297,7 +286,7 @@ public class AlterPartitionReassignmentsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name"),
+                new Field("name", Types.COMPACT_STRING, "The topic name"),
                 new Field("partitions", new CompactArrayOf(ReassignablePartitionResponse.SCHEMA_0), "The responses to partitions to reassign"),
                 TaggedFieldsSection.of(
                 )
@@ -506,7 +495,7 @@ public class AlterPartitionReassignmentsResponseData implements ApiMessage {
             new Schema(
                 new Field("partition_index", Type.INT32, "The partition index."),
                 new Field("error_code", Type.INT16, "The error code for this partition, or 0 if there was no error."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message for this partition, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message for this partition, or null if there was no error."),
                 TaggedFieldsSection.of(
                 )
             );

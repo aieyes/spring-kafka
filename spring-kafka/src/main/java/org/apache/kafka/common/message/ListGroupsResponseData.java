@@ -30,16 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class ListGroupsResponseData implements ApiMessage {
@@ -335,17 +327,17 @@ public class ListGroupsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_3 =
             new Schema(
-                new Field("group_id", Type.COMPACT_STRING, "The group ID."),
-                new Field("protocol_type", Type.COMPACT_STRING, "The group protocol type."),
+                new Field("group_id", Types.COMPACT_STRING, "The group ID."),
+                new Field("protocol_type", Types.COMPACT_STRING, "The group protocol type."),
                 TaggedFieldsSection.of(
                 )
             );
         
         public static final Schema SCHEMA_4 =
             new Schema(
-                new Field("group_id", Type.COMPACT_STRING, "The group ID."),
-                new Field("protocol_type", Type.COMPACT_STRING, "The group protocol type."),
-                new Field("group_state", Type.COMPACT_STRING, "The group state name."),
+                new Field("group_id", Types.COMPACT_STRING, "The group ID."),
+                new Field("protocol_type", Types.COMPACT_STRING, "The group protocol type."),
+                new Field("group_state", Types.COMPACT_STRING, "The group state name."),
                 TaggedFieldsSection.of(
                 )
             );

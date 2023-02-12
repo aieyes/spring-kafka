@@ -37,12 +37,12 @@ import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class ElectLeadersRequestData implements ApiMessage {
@@ -346,7 +346,7 @@ public class ElectLeadersRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("topic", Type.COMPACT_STRING, "The name of a topic."),
+                new Field("topic", Types.COMPACT_STRING, "The name of a topic."),
                 new Field("partitions", new CompactArrayOf(Type.INT32), "The partitions of this topic whose leader should be elected."),
                 TaggedFieldsSection.of(
                 )

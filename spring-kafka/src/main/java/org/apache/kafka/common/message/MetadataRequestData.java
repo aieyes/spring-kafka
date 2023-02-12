@@ -40,8 +40,8 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
-
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.Types;
 
 public class MetadataRequestData implements ApiMessage {
     List<MetadataRequestTopic> topics;
@@ -458,15 +458,15 @@ public class MetadataRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_9 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 TaggedFieldsSection.of(
                 )
             );
         
         public static final Schema SCHEMA_10 =
             new Schema(
-                new Field("topic_id", Type.UUID, "The topic id."),
-                new Field("name", Type.COMPACT_NULLABLE_STRING, "The topic name."),
+                new Field("topic_id", Types.UUID, "The topic id."),
+                new Field("name", Types.COMPACT_NULLABLE_STRING, "The topic name."),
                 TaggedFieldsSection.of(
                 )
             );

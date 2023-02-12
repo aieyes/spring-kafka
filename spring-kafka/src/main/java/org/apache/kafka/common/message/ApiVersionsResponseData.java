@@ -37,13 +37,12 @@ import org.apache.kafka.common.protocol.types.Field;
 import org.apache.kafka.common.protocol.types.RawTaggedField;
 import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
 import org.apache.kafka.common.protocol.types.Schema;
+import org.apache.kafka.common.protocol.types.TaggedFieldsSection;
 import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.Types;
 import org.apache.kafka.common.utils.ByteUtils;
 import org.apache.kafka.common.utils.ImplicitLinkedHashCollection;
 import org.apache.kafka.common.utils.ImplicitLinkedHashMultiCollection;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
-
 
 public class ApiVersionsResponseData implements ApiMessage {
     short errorCode;
@@ -766,7 +765,7 @@ public class ApiVersionsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_3 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The name of the feature."),
+                new Field("name", Types.COMPACT_STRING, "The name of the feature."),
                 new Field("min_version", Type.INT16, "The minimum supported version for the feature."),
                 new Field("max_version", Type.INT16, "The maximum supported version for the feature."),
                 TaggedFieldsSection.of(
@@ -1024,7 +1023,7 @@ public class ApiVersionsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_3 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The name of the feature."),
+                new Field("name", Types.COMPACT_STRING, "The name of the feature."),
                 new Field("max_version_level", Type.INT16, "The cluster-wide finalized max version level for the feature."),
                 new Field("min_version_level", Type.INT16, "The cluster-wide finalized min version level for the feature."),
                 TaggedFieldsSection.of(

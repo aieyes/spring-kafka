@@ -30,16 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeConfigsRequestData implements ApiMessage {
@@ -351,8 +343,8 @@ public class DescribeConfigsRequestData implements ApiMessage {
         public static final Schema SCHEMA_4 =
             new Schema(
                 new Field("resource_type", Type.INT8, "The resource type."),
-                new Field("resource_name", Type.COMPACT_STRING, "The resource name."),
-                new Field("configuration_keys", CompactArrayOf.nullable(Type.COMPACT_STRING), "The configuration keys to list, or null to list all configuration keys."),
+                new Field("resource_name", Types.COMPACT_STRING, "The resource name."),
+                new Field("configuration_keys", CompactArrayOf.nullable(Types.COMPACT_STRING), "The configuration keys to list, or null to list all configuration keys."),
                 TaggedFieldsSection.of(
                 )
             );

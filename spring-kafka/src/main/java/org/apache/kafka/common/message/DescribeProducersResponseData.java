@@ -30,15 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeProducersResponseData implements ApiMessage {
@@ -226,7 +219,7 @@ public class DescribeProducersResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name"),
+                new Field("name", Types.COMPACT_STRING, "The topic name"),
                 new Field("partitions", new CompactArrayOf(PartitionResponse.SCHEMA_0), "Each partition in the response."),
                 TaggedFieldsSection.of(
                 )
@@ -436,7 +429,7 @@ public class DescribeProducersResponseData implements ApiMessage {
             new Schema(
                 new Field("partition_index", Type.INT32, "The partition index."),
                 new Field("error_code", Type.INT16, "The partition error code, or 0 if there was no error."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The partition error message, which may be null if no additional details are available"),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The partition error message, which may be null if no additional details are available"),
                 new Field("active_producers", new CompactArrayOf(ProducerState.SCHEMA_0), ""),
                 TaggedFieldsSection.of(
                 )

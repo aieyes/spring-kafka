@@ -30,16 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class LeaveGroupResponseData implements ApiMessage {
@@ -341,8 +333,8 @@ public class LeaveGroupResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_4 =
             new Schema(
-                new Field("member_id", Type.COMPACT_STRING, "The member ID to remove from the group."),
-                new Field("group_instance_id", Type.COMPACT_NULLABLE_STRING, "The group instance ID to remove from the group."),
+                new Field("member_id", Types.COMPACT_STRING, "The member ID to remove from the group."),
+                new Field("group_instance_id", Types.COMPACT_NULLABLE_STRING, "The group instance ID to remove from the group."),
                 new Field("error_code", Type.INT16, "The error code, or 0 if there was no error."),
                 TaggedFieldsSection.of(
                 )

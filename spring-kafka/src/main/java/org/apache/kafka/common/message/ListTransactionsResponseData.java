@@ -30,15 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class ListTransactionsResponseData implements ApiMessage {
@@ -52,7 +45,7 @@ public class ListTransactionsResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, ""),
-            new Field("unknown_state_filters", new CompactArrayOf(Type.COMPACT_STRING), "Set of state filters provided in the request which were unknown to the transaction coordinator"),
+            new Field("unknown_state_filters", new CompactArrayOf(Types.COMPACT_STRING), "Set of state filters provided in the request which were unknown to the transaction coordinator"),
             new Field("transaction_states", new CompactArrayOf(TransactionState.SCHEMA_0), ""),
             TaggedFieldsSection.of(
             )
@@ -313,9 +306,9 @@ public class ListTransactionsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_0 =
             new Schema(
-                new Field("transactional_id", Type.COMPACT_STRING, ""),
+                new Field("transactional_id", Types.COMPACT_STRING, ""),
                 new Field("producer_id", Type.INT64, ""),
-                new Field("transaction_state", Type.COMPACT_STRING, "The current transaction state of the producer"),
+                new Field("transaction_state", Types.COMPACT_STRING, "The current transaction state of the producer"),
                 TaggedFieldsSection.of(
                 )
             );

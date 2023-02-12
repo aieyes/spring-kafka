@@ -30,16 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeLogDirsResponseData implements ApiMessage {
@@ -326,7 +318,7 @@ public class DescribeLogDirsResponseData implements ApiMessage {
         public static final Schema SCHEMA_2 =
             new Schema(
                 new Field("error_code", Type.INT16, "The error code, or 0 if there was no error."),
-                new Field("log_dir", Type.COMPACT_STRING, "The absolute log directory path."),
+                new Field("log_dir", Types.COMPACT_STRING, "The absolute log directory path."),
                 new Field("topics", new CompactArrayOf(DescribeLogDirsTopic.SCHEMA_2), "Each topic."),
                 TaggedFieldsSection.of(
                 )
@@ -616,7 +608,7 @@ public class DescribeLogDirsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("partitions", new CompactArrayOf(DescribeLogDirsPartition.SCHEMA_2), ""),
                 TaggedFieldsSection.of(
                 )

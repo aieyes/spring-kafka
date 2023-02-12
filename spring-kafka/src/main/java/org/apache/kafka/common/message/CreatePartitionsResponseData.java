@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class CreatePartitionsResponseData implements ApiMessage {
@@ -292,9 +292,9 @@ public class CreatePartitionsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("name", Type.COMPACT_STRING, "The topic name."),
+                new Field("name", Types.COMPACT_STRING, "The topic name."),
                 new Field("error_code", Type.INT16, "The result error, or zero if there was no error."),
-                new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The result message, or null if there was no error."),
+                new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The result message, or null if there was no error."),
                 TaggedFieldsSection.of(
                 )
             );

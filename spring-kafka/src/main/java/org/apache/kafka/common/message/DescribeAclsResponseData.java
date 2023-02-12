@@ -30,16 +30,8 @@ import org.apache.kafka.common.protocol.MessageUtil;
 import org.apache.kafka.common.protocol.ObjectSerializationCache;
 import org.apache.kafka.common.protocol.Readable;
 import org.apache.kafka.common.protocol.Writable;
-import org.apache.kafka.common.protocol.types.ArrayOf;
-import org.apache.kafka.common.protocol.types.CompactArrayOf;
-import org.apache.kafka.common.protocol.types.Field;
-import org.apache.kafka.common.protocol.types.RawTaggedField;
-import org.apache.kafka.common.protocol.types.RawTaggedFieldWriter;
-import org.apache.kafka.common.protocol.types.Schema;
-import org.apache.kafka.common.protocol.types.Type;
+import org.apache.kafka.common.protocol.types.*;
 import org.apache.kafka.common.utils.ByteUtils;
-
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
 
 
 public class DescribeAclsResponseData implements ApiMessage {
@@ -69,7 +61,7 @@ public class DescribeAclsResponseData implements ApiMessage {
         new Schema(
             new Field("throttle_time_ms", Type.INT32, "The duration in milliseconds for which the request was throttled due to a quota violation, or zero if the request did not violate any quota."),
             new Field("error_code", Type.INT16, "The error code, or 0 if there was no error."),
-            new Field("error_message", Type.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
+            new Field("error_message", Types.COMPACT_NULLABLE_STRING, "The error message, or null if there was no error."),
             new Field("resources", new CompactArrayOf(DescribeAclsResource.SCHEMA_2), "Each Resource that is referenced in an ACL."),
             TaggedFieldsSection.of(
             )
@@ -396,7 +388,7 @@ public class DescribeAclsResponseData implements ApiMessage {
         public static final Schema SCHEMA_2 =
             new Schema(
                 new Field("resource_type", Type.INT8, "The resource type."),
-                new Field("resource_name", Type.COMPACT_STRING, "The resource name."),
+                new Field("resource_name", Types.COMPACT_STRING, "The resource name."),
                 new Field("pattern_type", Type.INT8, "The resource pattern type."),
                 new Field("acls", new CompactArrayOf(AclDescription.SCHEMA_2), "The ACLs."),
                 TaggedFieldsSection.of(
@@ -717,8 +709,8 @@ public class DescribeAclsResponseData implements ApiMessage {
         
         public static final Schema SCHEMA_2 =
             new Schema(
-                new Field("principal", Type.COMPACT_STRING, "The ACL principal."),
-                new Field("host", Type.COMPACT_STRING, "The ACL host."),
+                new Field("principal", Types.COMPACT_STRING, "The ACL principal."),
+                new Field("host", Types.COMPACT_STRING, "The ACL host."),
                 new Field("operation", Type.INT8, "The ACL operation."),
                 new Field("permission_type", Type.INT8, "The ACL permission type."),
                 TaggedFieldsSection.of(

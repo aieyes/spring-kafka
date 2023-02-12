@@ -39,7 +39,7 @@ import org.apache.kafka.common.protocol.types.Schema;
 import org.apache.kafka.common.protocol.types.Type;
 import org.apache.kafka.common.utils.ByteUtils;
 
-import static org.apache.kafka.common.protocol.types.Field.TaggedFieldsSection;
+import org.apache.kafka.common.protocol.types.*;
 
 
 public class DescribeClientQuotasRequestData implements ApiMessage {
@@ -284,9 +284,9 @@ public class DescribeClientQuotasRequestData implements ApiMessage {
         
         public static final Schema SCHEMA_1 =
             new Schema(
-                new Field("entity_type", Type.COMPACT_STRING, "The entity type that the filter component applies to."),
+                new Field("entity_type", Types.COMPACT_STRING, "The entity type that the filter component applies to."),
                 new Field("match_type", Type.INT8, "How to match the entity {0 = exact name, 1 = default name, 2 = any specified name}."),
-                new Field("match", Type.COMPACT_NULLABLE_STRING, "The string to match against, or null if unused for the match type."),
+                new Field("match", Types.COMPACT_NULLABLE_STRING, "The string to match against, or null if unused for the match type."),
                 TaggedFieldsSection.of(
                 )
             );
