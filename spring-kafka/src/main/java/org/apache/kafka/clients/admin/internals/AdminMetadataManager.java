@@ -17,9 +17,8 @@
 
 package org.apache.kafka.clients.admin.internals;
 
-import org.apache.kafka.clients.MetadataUpdater;
+import org.apache.kafka.clients.ManualMetadataUpdater;
 import org.apache.kafka.common.Cluster;
-import org.apache.kafka.common.KafkaException;
 import org.apache.kafka.common.Node;
 import org.apache.kafka.common.errors.AuthenticationException;
 import org.apache.kafka.common.requests.MetadataResponse;
@@ -29,7 +28,6 @@ import org.slf4j.Logger;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Manages the metadata for KafkaAdminClient.
@@ -84,7 +82,7 @@ public class AdminMetadataManager {
      */
     private AuthenticationException authException = null;
 
-    public class AdminMetadataUpdater implements MetadataUpdater {
+    public class AdminMetadataUpdater extends ManualMetadataUpdater {
         @Override
         public List<Node> fetchNodes() {
             return cluster.nodes();
@@ -101,22 +99,20 @@ public class AdminMetadataManager {
         }
 
         @Override
-        public void handleServerDisconnect(long now, String destinationId, Optional<AuthenticationException> maybeFatalException) {
-            maybeFatalException.ifPresent(AdminMetadataManager.this::updateFailed);
+        public void handleDisconnection(String destination) {
             AdminMetadataManager.this.requestUpdate();
         }
 
         @Override
-        public void handleFailedRequest(long now, Optional<KafkaException> maybeFatalException) {
-            // Do nothing
+        public void handleCompletedMetadataResponse(RequestHeader requestHeader, long now, MetadataResponse metadataResponse) {
+
         }
 
         @Override
-        public void handleSuccessfulResponse(RequestHeader requestHeader, long now, MetadataResponse metadataResponse) {
-            // Do nothing
+        public void requestUpdate() {
+
         }
 
-        @Override
         public void close() {
         }
     }
